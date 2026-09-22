@@ -10,14 +10,13 @@
     
     <style>
         :root {
-            --primary-red: #D32F2F;
-            --primary-red-hover: #B71C1C;
-            --bg-light: #F8F9FA;
-            --card-bg: #FFFFFF;
+            --primary-red: #D32F2F;      /* Đỏ chủ đạo */
+            --primary-red-hover: #B71C1C;/* Đỏ đậm khi hover */
+            --bg-light: #F8F9FA;         /* Xám trắng làm nền */
             --text-color: #2D3748;
-            --text-muted: #718096;
+            --white: #FFFFFF;
             --border-color: #E2E8F0;
-            --sidebar-width: 260px;
+            --sidebar-width: 250px;
         }
 
         * {
@@ -35,18 +34,20 @@
             flex-direction: column;
         }
 
-        /* 1. HEADER */
+        /* ---------------- HEADER ---------------- */
         .header {
-            background-color: #FFFFFF;
-            height: 70px;
-            padding: 0 20px;
+            background-color: var(--white);
+            height: 65px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid var(--border-color);
-            position: sticky;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
 
         .header-left {
@@ -55,18 +56,18 @@
             gap: 15px;
         }
 
-        .btn-menu {
+        .toggle-btn {
             background: none;
             border: none;
             font-size: 22px;
             color: var(--primary-red);
             cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 5px;
+            border-radius: 5px;
             transition: background 0.2s;
         }
 
-        .btn-menu:hover {
+        .toggle-btn:hover {
             background-color: #FFEBEE;
         }
 
@@ -83,267 +84,239 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
-        .btn-header-action {
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
+            gap: 6px;
             transition: all 0.2s;
-            border: 1px solid var(--border-color);
-            background-color: #FFFFFF;
-            color: var(--text-color);
         }
 
-        .btn-header-action:hover {
-            border-color: var(--primary-red);
+        .icon-btn:hover {
+            background-color: #FFEBEE;
             color: var(--primary-red);
         }
 
         .btn-logout {
-            background-color: #FFEBEE;
             color: var(--primary-red);
-            border: none;
+            border: 1px solid var(--primary-red);
         }
 
         .btn-logout:hover {
             background-color: var(--primary-red);
-            color: #FFFFFF;
+            color: var(--white);
         }
 
-        /* 2. SIDEBAR (THANH 3 GẠCH BÊN TRÁI) */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 200;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
+        /* ---------------- SIDEBAR (3 GẠCH) ---------------- */
         .sidebar {
-            position: fixed;
-            top: 0;
-            left: -280px;
             width: var(--sidebar-width);
-            height: 100vh;
-            background-color: #FFFFFF;
-            z-index: 201;
-            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
-            transition: left 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar.active {
+            background-color: var(--white);
+            position: fixed;
+            top: 65px;
+            bottom: 0;
             left: 0;
+            border-right: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            padding-top: 15px;
         }
 
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sidebar-title {
-            font-weight: 700;
-            color: var(--primary-red);
-            font-size: 18px;
-        }
-
-        .btn-close-sidebar {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: var(--text-muted);
-            cursor: pointer;
+        .sidebar.closed {
+            transform: translateX(-100%);
         }
 
         .sidebar-menu {
             list-style: none;
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
         }
 
-        .sidebar-menu a {
+        .sidebar-item {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-link {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
+            padding: 12px 20px;
             color: var(--text-color);
             text-decoration: none;
             font-weight: 500;
-            border-radius: 10px;
+            font-size: 15px;
             transition: all 0.2s;
+            border-left: 4px solid transparent;
         }
 
-        .sidebar-menu a:hover, .sidebar-menu a.active {
+        .sidebar-link:hover, .sidebar-link.active {
             background-color: #FFEBEE;
             color: var(--primary-red);
+            border-left-color: var(--primary-red);
         }
 
-        .sidebar-menu a i {
+        .sidebar-link i {
             font-size: 18px;
             width: 24px;
-            text-align: center;
         }
 
-        /* 3. MAIN CONTENT */
-        .main-container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-            width: 100%;
+        /* Overlay cho mobile khi mở menu */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 65px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 998;
         }
 
-        .welcome-card {
-            background: linear-gradient(135deg, var(--primary-red) 0%, #9A0007 100%);
-            color: #FFFFFF;
-            border-radius: 16px;
+        /* ---------------- MAIN CONTENT ---------------- */
+        .main-content {
+            margin-top: 65px;
+            margin-left: var(--sidebar-width);
             padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(211, 47, 47, 0.15);
+            transition: margin-left 0.3s ease;
+            flex: 1;
         }
 
-        .welcome-card h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .main-content.expanded {
+            margin-left: 0;
         }
 
-        .welcome-card p {
-            opacity: 0.9;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Trạng thái API */
-        .status-box {
-            background-color: #FFFFFF;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .status-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #CBD5E0; /* Mặc định xám */
-        }
-
-        .status-dot.active {
-            background-color: #38A169; /* Xanh lá khi đã cấu hình */
-        }
-
-        /* Thẻ học sinh AI & Bắt đầu */
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary-red) 0%, #9A0007 100%);
+            color: var(--white);
+            padding: 25px 30px;
             border-radius: 16px;
-            padding: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.2);
         }
 
-        .card-header {
+        .welcome-banner h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-banner p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* SECTION THỐNG KÊ */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .avatar-student {
-            width: 60px;
-            height: 60px;
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(211, 47, 47, 0.08);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             background-color: #FFEBEE;
             color: var(--primary-red);
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 22px;
         }
 
-        .card-title h3 {
-            font-size: 18px;
-            margin-bottom: 4px;
+        .stat-info {
+            display: flex;
+            flex-direction: column;
         }
 
-        .card-title p {
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .stat-label {
             font-size: 13px;
-            color: var(--text-muted);
+            color: #718096;
+            margin-top: 2px;
         }
 
-        .btn-start {
-            width: 100%;
-            padding: 14px;
+        /* Quick Action Section */
+        .quick-action-card {
+            background-color: var(--white);
+            border: 1px dashed var(--primary-red);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-start-class {
             background-color: var(--primary-red);
-            color: #FFFFFF;
+            color: var(--white);
+            padding: 12px 28px;
             border: none;
             border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            text-align: center;
             text-decoration: none;
-            display: block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
             margin-top: 15px;
-            transition: background 0.2s;
         }
 
-        .btn-start:hover {
+        .btn-start-class:hover {
             background-color: var(--primary-red-hover);
+            transform: scale(1.02);
         }
 
-        /* 4. MODAL NHẬP API KEY */
+        /* ---------------- MODAL GEMINI API ---------------- */
         .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            z-index: 300;
             padding: 20px;
         }
 
@@ -352,297 +325,283 @@
         }
 
         .modal-content {
-            background-color: #FFFFFF;
+            background-color: var(--white);
             width: 100%;
             max-width: 450px;
             border-radius: 16px;
             padding: 25px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            animation: popIn 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            animation: modalFadeIn 0.2s ease;
         }
 
-        @keyframes popIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .modal-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
         }
 
         .modal-header h3 {
-            font-size: 18px;
             color: var(--primary-red);
+            font-size: 18px;
         }
 
-        .input-key-group {
-            margin: 15px 0;
-            position: relative;
-        }
-
-        .input-key-group input {
-            width: 100%;
-            padding: 12px;
-            padding-right: 40px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .input-key-group input:focus {
-            border-color: var(--primary-red);
-        }
-
-        .btn-toggle-key {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+        .close-modal {
             background: none;
             border: none;
-            color: var(--text-muted);
+            font-size: 20px;
             cursor: pointer;
+            color: #A0AEC0;
+        }
+
+        .modal-body label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .modal-body input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .modal-body input:focus {
+            border-color: var(--primary-red);
         }
 
         .modal-footer {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            margin-top: 20px;
         }
 
-        .btn-modal {
+        .btn-save-key {
+            background-color: var(--primary-red);
+            color: var(--white);
+            border: none;
             padding: 10px 18px;
             border-radius: 8px;
-            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            border: none;
         }
 
-        .btn-save {
-            background-color: var(--primary-red);
-            color: #FFFFFF;
-        }
-
-        .btn-cancel {
-            background-color: #E2E8F0;
-            color: var(--text-color);
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open-mobile {
+                transform: translateX(0);
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. HEADER -->
+    <!-- HEADER -->
     <header class="header">
         <div class="header-left">
-            <button class="btn-menu" id="btn-toggle-sidebar" title="Mở menu">
+            <button class="toggle-btn" id="toggle-sidebar" title="Mở/Đóng Menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <a href="trangchu.html" class="logo">
                 <i class="fa-solid fa-graduation-cap"></i>
-                EduTeach AI
+                <span>EduTeach AI</span>
             </a>
         </div>
-
         <div class="header-right">
-            <button class="btn-header-action" onclick="openKeyModal()">
-                <i class="fa-solid fa-key" style="color: var(--primary-red);"></i>
-                <span>Gemini API</span>
+            <button class="icon-btn" onclick="openApiModal()" title="Cài đặt API Key">
+                <i class="fa-solid fa-gear"></i>
+                <span style="font-size: 13px; font-weight: 500;">API Key</span>
             </button>
-            <button class="btn-header-action btn-logout" onclick="logout()">
+            <a href="index.html" class="icon-btn btn-logout" title="Đăng xuất">
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Đăng xuất</span>
-            </button>
+                <span style="font-size: 13px; font-weight: 500;">Đăng xuất</span>
+            </a>
         </div>
     </header>
 
-    <!-- 2. SIDEBAR (THANH 3 GẠCH BÊN TRÁI) -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <!-- SIDEBAR (3 GẠCH) -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span class="sidebar-title">Danh mục</span>
-            <button class="btn-close-sidebar" onclick="closeSidebar()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
         <ul class="sidebar-menu">
-            <li>
-                <a href="trangchu.html" class="active">
+            <li class="sidebar-item">
+                <a href="trangchu.html" class="sidebar-link active">
                     <i class="fa-solid fa-house"></i>
-                    Trang chủ
+                    <span>Trang chủ</span>
                 </a>
             </li>
-            <li>
-                <a href="lophoc.html">
+            <li class="sidebar-item">
+                <a href="lophoc.html" class="sidebar-link">
                     <i class="fa-solid fa-chalkboard-user"></i>
-                    Phòng Học 
+                    <span>Lớp học AI</span>
                 </a>
             </li>
-            <li>
-                <a href="hocsinh.html">
-                    <i class="fa-solid fa-child-reaching"></i>
-                    Hồ sơ Học Sinh
+            <li class="sidebar-item">
+                <a href="hocsinh.html" class="sidebar-link">
+                    <i class="fa-solid fa-child"></i>
+                    <span>Học sinh AI</span>
                 </a>
             </li>
-            <li>
-                <a href="baocao.html">
+            <li class="sidebar-item">
+                <a href="baocao.html" class="sidebar-link">
                     <i class="fa-solid fa-chart-line"></i>
-                    Báo cáo & Điểm số
+                    <span>Báo cáo & Điểm</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="giaoan.html" class="sidebar-link">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Giáo án</span>
                 </a>
             </li>
         </ul>
     </aside>
 
-    <!-- 3. MAIN CONTENT -->
-    <main class="main-container">
-        <!-- Banner Chào mừng -->
-        <div class="welcome-card">
-            <h1>WELCOME BACK!</h1>
-            <p>Hệ thống đã sẵn sàng cho buổi thực hành giảng dạy. Hãy kiểm tra cài đặt Gemini API Key và bước vào phòng học để bắt đầu tương tác cùng AI Học sinh 10 tuổi.</p>
+    <!-- OVERLAY CHO MOBILE -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="main-content">
+        <!-- Banner Chào Mừng -->
+        <div class="welcome-banner">
+            <h1>Chào mừng trở lại, Giáo viên Sư phạm!</h1>
+            <p>Hệ thống đã sẵn sàng cho buổi thực hành giảng dạy Tiếng Anh cùng AI học sinh 10 tuổi.</p>
         </div>
 
-        <!-- Trạng thái API Key -->
-        <div class="status-box">
-            <div class="status-info">
-                <div class="status-dot" id="status-dot"></div>
-                <span id="status-text" style="font-weight: 500; font-size: 14px;">Chưa cấu hình Gemini API Key</span>
-            </div>
-            <button class="btn-header-action" onclick="openKeyModal()" style="font-size: 13px;">
-                Cấu hình ngay
-            </button>
-        </div>
+        <!-- THỐNG KÊ LIÊN KẾT -->
+        <h2 class="section-title">
+            <i class="fa-solid fa-chart-pie" style="color: var(--primary-red);"></i>
+            Thống kê hiệu quả giảng dạy
+        </h2>
 
-        <!-- Thẻ Phòng Học Chính -->
-        <div class="grid-cards">
-            <div class="card">
-                <div>
-                    <div class="card-header">
-                        <div class="avatar-student">
-                            <i class="fa-solid fa-face-smile"></i>
-                        </div>
-                        <div class="card-title">
-                            <h3>Tim (10 Tuổi)</h3>
-                            <p>Học sinh Lớp 4 </p>
-                        </div>
-                    </div>
-                    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">
-                        Sẵn sàng luyện tập Voice 1-1. Bạn sẽ đóng vai giáo viên giải thích các kiến thức bằng lời nói trực tiếp.
-                    </p>
+        <div class="stats-grid">
+            <!-- Điểm số cao nhất -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-trophy"></i>
                 </div>
-                <a href="lophoc.html" class="btn-start">
-                    Thực Hành Ngay <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
-                </a>
+                <div class="stat-info">
+                    <span class="stat-value" id="stat-high-score">0 / 100</span>
+                    <span class="stat-label">Điểm dạy cao nhất</span>
+                </div>
             </div>
+
+            <!-- Số chủ đề đã dạy -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value" id="stat-topics-count">0</span>
+                    <span class="stat-label">Số chủ đề đã dạy</span>
+                </div>
+            </div>
+
+            <!-- Đánh giá trung bình -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value" id="stat-rating">0.0 / 5.0</span>
+                    <span class="stat-label">Đánh giá chung</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khối hành động chuyển qua Lớp học -->
+        <div class="quick-action-card">
+            <h3 style="margin-bottom: 8px;">Sẵn sàng bắt đầu buổi học?</h3>
+            <p style="color: #718096; font-size: 14px;">Chuyển sang phòng lớp học để chọn bài dạy và tương tác Voice 1-1 với AI.</p>
+            <a href="lophoc.html" class="btn-start-class">
+                Vào Phòng Lớp Học <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
     </main>
 
-    <!-- 4. MODAL NHẬP GEMINI API KEY -->
+    <!-- MODAL NHẬP GEMINI API KEY -->
     <div class="modal" id="api-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-key"></i> Cài đặt Gemini API Key</h3>
-                <button class="btn-close-sidebar" onclick="closeKeyModal()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <h3>Cấu hình Gemini API Key</h3>
+                <button class="close-modal" onclick="closeApiModal()">&times;</button>
             </div>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                Key sẽ được lưu bảo mật ngay trên trình duyệt (localStorage) của bạn để gọi trí não AI học sinh.
-            </p>
-            <div class="input-key-group">
-                <input type="password" id="api-key-input" placeholder="Dán Gemini API Key của bạn vào đây...">
-                <button class="btn-toggle-key" onclick="toggleKeyVisibility()">
-                    <i class="fa-regular fa-eye" id="eye-icon"></i>
-                </button>
+            <div class="modal-body">
+                <label for="api-key-input">Nhập API Key Google Gemini của bạn:</label>
+                <input type="password" id="api-key-input" placeholder="AIzaSy...">
+                <p style="font-size: 12px; color: #718096; line-height: 1.4;">
+                    * API Key giúp kết nối trực tiếp trí não AI học sinh. Key sẽ được lưu tạm an toàn trên trình duyệt của bạn.
+                </p>
             </div>
             <div class="modal-footer">
-                <button class="btn-modal btn-cancel" onclick="closeKeyModal()">Hủy</button>
-                <button class="btn-modal btn-save" onclick="saveApiKey()">Lưu Cấu Hình</button>
+                <button class="btn-save-key" onclick="saveApiKey()">Lưu Cấu Hình</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT XỬ LÝ GIAO DIỆN & LOGIC API KEY -->
+    <!-- JAVASCRIPT ĐIỀU KHIỂN GIAO DIỆN -->
     <script>
-        // DOM Elements
         const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
-        const apiModal = document.getElementById('api-modal');
-        const apiKeyInput = document.getElementById('api-key-input');
-        const statusDot = document.getElementById('status-dot');
-        const statusText = document.getElementById('status-text');
+        const mainContent = document.getElementById('main-content');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
 
-        // Toggle Sidebar
-        btnToggleSidebar.addEventListener('click', () => {
-            sidebar.classList.add('active');
-            sidebarOverlay.classList.add('active');
+        // Bật / Tắt Menu 3 gạch
+        toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('expanded');
+            } else {
+                sidebar.classList.toggle('open-mobile');
+                overlay.classList.toggle('active');
+            }
         });
 
-        function closeSidebar() {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-        }
+        // Đóng menu khi bấm overlay ở mobile
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open-mobile');
+            overlay.classList.remove('active');
+        });
 
-        // Handle Modal API Key
-        function openKeyModal() {
+        // --- XỬ LÝ MODAL API KEY ---
+        function openApiModal() {
             const savedKey = localStorage.getItem('GEMINI_API_KEY') || '';
-            apiKeyInput.value = savedKey;
-            apiModal.classList.add('active');
+            document.getElementById('api-key-input').value = savedKey;
+            document.getElementById('api-modal').classList.add('active');
         }
 
-        function closeKeyModal() {
-            apiModal.classList.remove('active');
-        }
-
-        function toggleKeyVisibility() {
-            const eyeIcon = document.getElementById('eye-icon');
-            if (apiKeyInput.type === 'password') {
-                apiKeyInput.type = 'text';
-                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                apiKeyInput.type = 'password';
-                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+        function closeApiModal() {
+            document.getElementById('api-modal').classList.remove('active');
         }
 
         function saveApiKey() {
-            const key = apiKeyInput.value.trim();
+            const key = document.getElementById('api-key-input').value.trim();
             if (key) {
                 localStorage.setItem('GEMINI_API_KEY', key);
                 alert('Đã lưu Gemini API Key thành công!');
-                checkApiKeyStatus();
-                closeKeyModal();
+                closeApiModal();
             } else {
-                alert('Vui lòng nhập API Key hợp lệ!');
+                alert('Vui lòng nhập API Key hợp lệ.');
             }
         }
-
-        // Kiểm tra xem đã có API Key lưu trong trình duyệt chưa
-        function checkApiKeyStatus() {
-            const savedKey = localStorage.getItem('GEMINI_API_KEY');
-            if (savedKey && savedKey.length > 10) {
-                statusDot.classList.add('active');
-                statusText.innerText = "Đã kết nối Gemini API thành công";
-                statusText.style.color = "#2F855A";
-            } else {
-                statusDot.classList.remove('active');
-                statusText.innerText = "Chưa cấu hình Gemini API Key (Cần nhập để AI hoạt động)";
-                statusText.style.color = "#E53E3E";
-            }
-        }
-
-        // Đăng xuất
-        function logout() {
-            window.location.href = 'index.html';
-        }
-
-        // Chạy kiểm tra ban đầu khi load trang
-        window.addEventListener('DOMContentLoaded', checkApiKeyStatus);
     </script>
 </body>
 </html>
