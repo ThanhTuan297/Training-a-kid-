@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Học Sinh AI - EduTeach AI</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-red: #D32F2F;      /* Đỏ chủ đạo */
+            --primary-red-hover: #B71C1C;/* Đỏ đậm */
+            --bg-light: #F8F9FA;         /* Xám trắng */
+            --text-color: #2D3748;
+            --white: #FFFFFF;
+            --border-color: #E2E8F0;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------------- HEADER ---------------- */
+        .header {
+            background-color: var(--white);
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle-btn {
+            background: none; border: none;
+            font-size: 22px; color: var(--primary-red);
+            cursor: pointer; padding: 5px;
+            border-radius: 5px; transition: background 0.2s;
+        }
+
+        .toggle-btn:hover { background-color: #FFEBEE; }
+
+        .logo {
+            font-size: 20px; font-weight: 700;
+            color: var(--primary-red);
+            display: flex; align-items: center; gap: 8px;
+            text-decoration: none;
+        }
+
+        .header-right { display: flex; align-items: center; gap: 15px; }
+
+        .icon-btn {
+            background: none; border: none; font-size: 18px;
+            color: var(--text-color); cursor: pointer;
+            padding: 8px 12px; border-radius: 8px;
+            display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s; text-decoration: none;
+        }
+
+        .icon-btn:hover { background-color: #FFEBEE; color: var(--primary-red); }
+
+        .btn-logout {
+            color: var(--primary-red);
+            border: 1px solid var(--primary-red);
+        }
+
+        .btn-logout:hover {
+            background-color: var(--primary-red);
+            color: var(--white);
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--white);
+            position: fixed; top: 65px; bottom: 0; left: 0;
+            border-right: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+            z-index: 999; padding-top: 15px;
+        }
+
+        .sidebar.closed { transform: translateX(-100%); }
+        .sidebar-menu { list-style: none; }
+        .sidebar-item { margin-bottom: 5px; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 20px; color: var(--text-color);
+            text-decoration: none; font-weight: 500; font-size: 15px;
+            transition: all 0.2s; border-left: 4px solid transparent;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #FFEBEE;
+            color: var(--primary-red);
+            border-left-color: var(--primary-red);
+        }
+
+        .sidebar-link i { font-size: 18px; width: 24px; }
+
+        .sidebar-overlay {
+            display: none; position: fixed;
+            top: 65px; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4); z-index: 998;
+        }
+
+        /* ---------------- MAIN CONTENT ---------------- */
+        .main-content {
+            margin-top: 65px;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+            flex: 1;
+        }
+
+        .main-content.expanded { margin-left: 0; }
+
+        .page-title {
+            font-size: 22px; font-weight: 700;
+            margin-bottom: 8px; color: var(--primary-red);
+        }
+
+        .page-desc {
+            font-size: 14px; color: #718096; margin-bottom: 25px;
+        }
+
+        /* ---------------- STUDENTS GRID ---------------- */
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .student-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(211, 47, 47, 0.1);
+            border-color: #FFCDD2;
+        }
+
+        .card-header-bg {
+            height: 80px;
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background-color: var(--white);
+            border: 3px solid var(--white);
+            position: absolute;
+            bottom: -35px; left: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .student-body {
+            padding: 45px 20px 20px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-size: 20px; font-weight: 700; color: var(--text-color);
+        }
+
+        .student-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 5px; margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .tag-tim { background-color: #E3F2FD; color: #1976D2; }
+        .tag-sarah { background-color: #F3E5F5; color: #7B1FA2; }
+        .tag-alex { background-color: #FFF3E0; color: #E65100; }
+
+        .student-desc-en {
+            font-size: 13px;
+            color: #4A5568;
+            line-height: 1.6;
+            background-color: #FAFAFA;
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary-red);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .topic-input-group {
+            margin-top: auto;
+        }
+
+        .topic-input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .topic-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .topic-input:focus {
+            border-color: var(--primary-red);
+        }
+
+        .btn-teach {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-red);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-teach:hover {
+            background-color: var(--primary-red-hover);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open-mobile { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+            .main-content { margin-left: 0; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="trangchu.html" class="logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>EduTeach AI</span>
+            </a>
+        </div>
+        <div class="header-right">
+            <button onclick="logout()" class="icon-btn btn-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span style="font-size: 13px; font-weight: 500;">Đăng xuất</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="trangchu.html" class="sidebar-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Trang chủ</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="lophoc.html" class="sidebar-link">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>Lớp học AI</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="hocsinh.html" class="sidebar-link active">
+                    <i class="fa-solid fa-child"></i>
+                    <span>Học sinh AI</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="baocao.html" class="sidebar-link">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Báo cáo & Điểm</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="giaoan.html" class="sidebar-link">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Giáo án</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="main-content">
+        <h1 class="page-title">Chọn Học Sinh AI & Bài Dạy</h1>
+        <p class="page-desc">Chọn 1 học sinh phù hợp với tính cách, nhập chủ đề Tiếng Anh bạn muốn dạy và bắt đầu vào lớp học.</p>
+
+        <div class="students-grid">
+            <!-- HỌC SINH 1: TIM -->
+            <div class="student-card">
+                <div class="card-header-bg">
+                    <div class="avatar-wrapper">👦🏻</div>
+                </div>
+                <div class="student-body">
+                    <h2 class="student-name">Tim (10 years old)</h2>
+                    <span class="student-tag tag-tim">Innocent & Well-behaved</span>
+                    <p class="student-desc-en">
+                        "Tim is extremely innocent, polite, and eager to learn. However, he easily gets confused by complex words. He asks simple 'Why?' questions and needs direct, visual explanations."
+                    </p>
+                    <div class="topic-input-group">
+                        <label for="topic-tim">Chủ đề bài dạy (Topic):</label>
+                        <input type="text" id="topic-tim" class="topic-input" placeholder="VD: Animals & Habitats">
+                        <button class="btn-teach" onclick="selectStudentAndTeach('Tim', 10, 'innocent', 'topic-tim')">
+                            Dạy học sinh này <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HỌC SINH 2: SARAH -->
+            <div class="student-card">
+                <div class="card-header-bg">
+                    <div class="avatar-wrapper">👧🏼</div>
+                </div>
+                <div class="student-body">
+                    <h2 class="student-name">Sarah (10 years old)</h2>
+                    <span class="student-tag tag-sarah">Smart but Lazy</span>
+                    <p class="student-desc-en">
+                        "Sarah grasps new concepts very quickly but lacks motivation. She easily gets bored if the lesson is too slow or uninteresting. Teachers need to keep her engaged with interactive prompts."
+                    </p>
+                    <div class="topic-input-group">
+                        <label for="topic-sarah">Chủ đề bài dạy (Topic):</label>
+                        <input type="text" id="topic-sarah" class="topic-input" placeholder="VD: Daily Routines">
+                        <button class="btn-teach" onclick="selectStudentAndTeach('Sarah', 10, 'lazy_smart', 'topic-sarah')">
+                            Dạy học sinh này <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HỌC SINH 3: ALEX -->
+            <div class="student-card">
+                <div class="card-header-bg">
+                    <div class="avatar-wrapper">👦🏽</div>
+                </div>
+                <div class="student-body">
+                    <h2 class="student-name">Alex (10 years old)</h2>
+                    <span class="student-tag tag-alex">Naughty & Struggling</span>
+                    <p class="student-desc-en">
+                        "Alex is playful, easily distracted, and struggles with English basics. He often responds with funny or off-topic remarks. Patience and classroom management are key when teaching him."
+                    </p>
+                    <div class="topic-input-group">
+                        <label for="topic-alex">Chủ đề bài dạy (Topic):</label>
+                        <input type="text" id="topic-alex" class="topic-input" placeholder="VD: Food & Drinks">
+                        <button class="btn-teach" onclick="selectStudentAndTeach('Alex', 10, 'naughty', 'topic-alex')">
+                            Dạy học sinh này <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPT XỬ LÝ DỮ LIỆU -->
+    <script>
+        // --- 1. KIỂM TRA ĐĂNG NHẬP KHHI MỞ TRANG ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = sessionStorage.getItem('IS_LOGGED_IN');
+            if (!isLoggedIn) {
+                // Nếu chưa đăng nhập (hoặc vừa thoát trình duyệt mở lại), tự đẩy về index.html
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- 2. XỬ LÝ ĐĂNG XUẤT ---
+        function logout() {
+            sessionStorage.removeItem('IS_LOGGED_IN');
+            window.location.href = 'index.html';
+        }
+
+        // --- 3. ĐIỀU KHIỂN SIDEBAR ---
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('expanded');
+            } else {
+                sidebar.classList.toggle('open-mobile');
+                overlay.classList.toggle('active');
+            }
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open-mobile');
+            overlay.classList.remove('active');
+        });
+
+        // --- 4. CHỌN HỌC SINH VÀ CHUYỂN QUA LOPHOC.HTML ---
+        function selectStudentAndTeach(name, age, personality, inputId) {
+            const topicValue = document.getElementById(inputId).value.trim();
+
+            if (!topicValue) {
+                alert(`Vui lòng nhập chủ đề bạn muốn dạy cho ${name}!`);
+                return;
+            }
+
+            // Lưu dữ liệu vào localStorage để file lophoc.html đọc
+            const selectedClassData = {
+                studentName: name,
+                studentAge: age,
+                personality: personality,
+                topic: topicValue,
+                timestamp: new Date().getTime()
+            };
+
+            localStorage.setItem('CURRENT_CLASS_DATA', JSON.stringify(selectedClassData));
+
+            // Nhảy ngay sang trang lớp học
+            window.location.href = 'lophoc.html';
+        }
+    </script>
+</body>
+</html>
