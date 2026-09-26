@@ -144,6 +144,9 @@
     const emptyState = document.getElementById('emptyState');
     const classroomUI = document.getElementById('classroomUI');
 
+    // Mảng lưu trữ lịch sử ngữ cảnh chát sạch cho mỗi phiên mới
+    let chatHistoryArray = [];
+
     if (!studentName || !studentType || !lessonTopic) {
       emptyState.classList.remove('hidden');
       emptyState.classList.add('flex');
@@ -160,7 +163,14 @@
       else if (studentType === 'nghich-ngom') badge.innerText = 'Hard Mode 🔥 • Nghịch ngợm';
       else badge.innerText = studentType;
 
-      initClassroom();
+      // 1. TỰ ĐỘNG XÓA SẠCH LỊCH SỬ CHÁT VÀ GIAO DIỆN KHI VÀO PHÒNG MỚI
+      resetChatSession();
+    }
+
+    function resetChatSession() {
+      chatHistoryArray = []; // Xóa sạch bộ nhớ tạm ngữ cảnh
+      document.getElementById('chatHistory').innerHTML = ''; // Xóa sạch UI hiển thị cũ
+      initClassroom(); // Khởi tạo phiên học sạch mới
     }
 
     function getSystemPrompt() {
@@ -182,7 +192,7 @@
       return `${globalRules}\n\nTHÔNG TIN HỌC SINH:\n${personalityPrompt}`;
     }
 
-    // HÀM GỌI GEMINI API SỬ DỤNG GEMINI-3.8-FLASH MỚI NHẤT
+    // HÀM GỌI GEMINI API SỬ DỤNG GEMINI-3.8-FLASH CÙNG TỐI ƯU SPEED OPTIMIZATION
     async function callGeminiAPI(systemPrompt, userMessage) {
       const apiKey = localStorage.getItem('gemini_api_key');
       if (!apiKey) {
@@ -201,7 +211,11 @@
               role: 'user',
               parts: [{ text: `System Instruction: ${systemPrompt}\n\nUser Message: ${userMessage}` }]
             }
-          ]
+          ],
+          // 2. TỐI ƯU TỐC ĐỘ PHẢN HỒI (GIỚI HẠN maxOutputTokens)
+          generationConfig: {
+            maxOutputTokens: 200
+          }
         })
       });
 
@@ -217,6 +231,9 @@
     function appendMessage(sender, text, isError = false) {
       const chatHistory = document.getElementById('chatHistory');
       const isTeacher = sender === 'teacher';
+
+      // Lưu trữ vào mảng lịch sử bộ nhớ tạm
+      chatHistoryArray.push({ sender, text });
 
       const wrapper = document.createElement('div');
       wrapper.className = `flex ${isTeacher ? 'justify-end' : 'justify-start'}`;
