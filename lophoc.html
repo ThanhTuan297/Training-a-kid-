@@ -3,24 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELI10 - Phòng Học Tương Tác AI</title>
-  
+  <title>ELI10 - Phòng Học 1-1</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Custom Font Inter & FontAwesome -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
           colors: {
             brand: {
               50: '#f0fdf4',
@@ -35,154 +24,109 @@
       }
     }
   </script>
-
-  <style>
-    /* Custom Scrollbar for Chat Box */
-    .chat-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    .chat-scroll::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 8px;
-    }
-    .chat-scroll::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 8px;
-    }
-    .chat-scroll::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-  </style>
-
+  <!-- Auth Guard Script (Chạy ngay lập tức để bảo vệ trang) -->
   <script>
-    // 1. AUTH GUARD: Kiểm tra quyền đăng nhập ngay lập tức
-    (function checkAuth() {
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-      if (isLoggedIn !== 'true') {
-        window.location.href = 'index.html';
-      }
-    })();
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'index.html';
+    }
   </script>
 </head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+  <!-- 1. STICKY HEADER -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <a href="trangchu.html" class="flex items-center space-x-2">
+            <span class="text-2xl font-black bg-gradient-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent tracking-tight">ELI10</span>
+          </a>
+        </div>
 
-  <!-- 1. THANH CÔNG CỤ (Sticky Header) -->
-  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Logo -->
-      <div class="flex items-center space-x-3">
-        <a href="trangchu.html" class="flex items-center space-x-2 group">
-          <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:bg-brand-600 transition">
-            E
-          </div>
-          <span class="text-2xl font-extrabold tracking-tight text-brand-600">ELI10</span>
-        </a>
-      </div>
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center space-x-1 font-medium text-slate-600">
+          <a href="trangchu.html" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-brand-50 transition">Trang chủ</a>
+          <a href="lophoc.html" class="px-3 py-2 rounded-lg text-brand-600 bg-brand-50 font-semibold">Lớp học</a>
+          <a href="hocsinh.html" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-brand-50 transition">Học sinh</a>
+          <a href="giaoan.html" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-brand-50 transition">Giáo án</a>
+        </nav>
 
-      <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
-        <a href="trangchu.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition">
-          <i class="fa-solid fa-house mr-1.5"></i>Trang chủ
-        </a>
-        <a href="lophoc.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-700 bg-brand-50 border border-brand-100 transition">
-          <i class="fa-solid fa-chalkboard-user mr-1.5"></i>Lớp học
-        </a>
-        <a href="hocsinh.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition">
-          <i class="fa-solid fa-user-graduate mr-1.5"></i>Học sinh
-        </a>
-        <a href="giaoan.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition">
-          <i class="fa-solid fa-book-bookmark mr-1.5"></i>Giáo án
-        </a>
-      </nav>
-
-      <!-- Logout Button -->
-      <div class="flex items-center space-x-3">
-        <button id="logoutBtn" onclick="handleLogout()" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition focus:outline-none focus:ring-2 focus:ring-red-500/20">
-          <i class="fa-solid fa-right-from-bracket mr-2"></i>Đăng xuất
-        </button>
+        <!-- Logout Button -->
+        <div>
+          <button id="logoutBtn" onclick="handleLogout()" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition border border-slate-200 hover:border-rose-200">
+            Đăng xuất
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-1 flex flex-col max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+  <main class="flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- 2. KHUNG EMPTY STATE (Khi chưa chọn học sinh / bài học) -->
-    <div id="emptyStateContainer" class="hidden flex-1 flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-xl border border-slate-100 max-w-lg w-full flex flex-col items-center">
-        <div class="text-7xl mb-4 animate-bounce">🏫👻</div>
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">Chưa có ai ở đây cả!</h2>
-        <p class="text-slate-600 mb-6 leading-relaxed">
-          Bạn chưa chọn học sinh hoặc chưa nhập chủ đề bài học.
-        </p>
-        <a href="hocsinh.html" class="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-brand-500 hover:bg-brand-600 active:bg-brand-700 rounded-xl shadow-lg shadow-brand-500/30 transition transform hover:-translate-y-0.5">
-          👉 Đến trang chọn học sinh ngay
-        </a>
-      </div>
+    <!-- 2. EMPTY STATE (Hiển thị khi thiếu thông tin học sinh/chủ đề) -->
+    <div id="emptyState" class="hidden my-auto flex-col items-center justify-center text-center p-8 bg-white rounded-2xl shadow-sm border border-slate-200 max-w-lg mx-auto">
+      <div class="text-7xl mb-4 animate-bounce">🏫👻</div>
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Chưa có ai ở đây cả!</h2>
+      <p class="text-slate-600 mb-6">Bạn chưa chọn học sinh hoặc chưa nhập chủ đề bài học.</p>
+      <a href="hocsinh.html" class="inline-flex items-center justify-center px-6 py-3 font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-lg shadow-brand-500/20 transition duration-200">
+        👉 Đến trang chọn học sinh ngay
+      </a>
     </div>
 
-    <!-- 3. KHUNG PHÒNG HỌC 1-1 (Khi đã có đủ dữ liệu) -->
-    <div id="classroomContainer" class="hidden flex-1 flex flex-col bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+    <!-- 3. CLASSROOM UI (Giao diện phòng học khi đã có dữ liệu) -->
+    <div id="classroomUI" class="hidden flex-1 flex-col h-[calc(100vh-8rem)] bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
       
       <!-- Class Header -->
-      <div class="bg-slate-900 text-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800">
-        <div class="flex items-center space-x-4">
-          <div id="studentAvatarContainer" class="w-12 h-12 rounded-full bg-brand-500 flex items-center justify-center text-2xl shadow-inner border-2 border-white/20">
-            <!-- Avatar Icon Loaded via JS -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center text-xl font-bold border border-brand-500/30">
+            🎓
           </div>
           <div>
             <div class="flex items-center space-x-2">
-              <h1 id="headerStudentName" class="text-lg font-bold">Học sinh AI</h1>
-              <span id="headerStudentBadge" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-800 text-brand-400 border border-brand-500/30">
-                Loại tính cách
-              </span>
+              <h1 id="studentName" class="font-bold text-lg text-white">---</h1>
+              <span id="studentTypeBadge" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">---</span>
             </div>
-            <p class="text-xs text-slate-300 mt-0.5 flex items-center">
-              <i class="fa-solid fa-book-open text-brand-400 mr-1.5"></i>
-              <span>Chủ đề: <strong id="headerLessonTopic" class="text-white">Chưa chọn</strong></span>
-            </p>
+            <p id="lessonTopic" class="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">Chủ đề: ---</p>
           </div>
         </div>
-
-        <div>
-          <a href="hocsinh.html" class="inline-flex items-center px-3.5 py-2 text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700 transition">
-            <i class="fa-solid fa-arrows-rotate mr-2"></i>Đổi học sinh khác
-          </a>
-        </div>
+        <a href="hocsinh.html" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+          Đổi học sinh khác
+        </a>
       </div>
 
-      <!-- Chat History Box -->
-      <div id="chatHistory" class="flex-1 p-4 sm:p-6 space-y-4 overflow-y-auto chat-scroll min-h-[380px] max-h-[60vh] bg-slate-50/50">
-        <!-- Messages dynamically rendered here -->
+      <!-- Chat History Area -->
+      <div id="chatHistory" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/50">
+        <!-- Dynamically rendered chat messages -->
       </div>
 
       <!-- Thinking Indicator -->
-      <div id="thinkingIndicator" class="hidden px-6 py-2 bg-brand-50/80 border-t border-brand-100 flex items-center space-x-2 text-sm text-brand-700 animate-pulse">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <span class="font-medium">Bé đang suy nghĩ... 💭</span>
+      <div id="thinkingIndicator" class="hidden px-6 py-2 bg-brand-50 text-brand-700 text-xs font-medium border-t border-brand-100 flex items-center space-x-2">
+        <svg class="animate-spin h-3.5 w-3.5 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Bé đang suy nghĩ... 💭</span>
       </div>
 
       <!-- Input Area -->
       <div class="p-4 bg-white border-t border-slate-200">
-        <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-3">
-          <div class="flex-1 relative">
-            <textarea 
-              id="userPrompt" 
-              rows="2" 
-              placeholder="Nhập câu giảng hoặc câu hỏi dành cho học sinh... (Nhấn Enter để gửi)"
-              class="w-full resize-none p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-slate-800 placeholder-slate-400 text-sm transition"
-              onkeydown="handleKeyDown(event)"
-            ></textarea>
-          </div>
+        <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-2">
+          <textarea 
+            id="userInput" 
+            rows="2" 
+            placeholder="Nhập nội dung bài giảng hoặc lời thoại của Thầy/Cô..." 
+            class="flex-1 p-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white resize-none transition"
+            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleSendMessage(event); }"
+          ></textarea>
           <button 
             type="submit" 
             id="sendBtn" 
-            class="px-6 py-2 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-semibold rounded-xl shadow-md shadow-brand-500/20 transition flex items-center justify-center self-end h-[50px] disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md shadow-brand-500/20 transition flex items-center justify-center self-end h-full min-h-[50px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>Gửi bài</span>
-            <i class="fa-solid fa-paper-plane ml-2"></i>
           </button>
         </form>
       </div>
@@ -191,279 +135,196 @@
 
   </main>
 
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // --- 1. Quản lý Đăng xuất ---
+    // 1. Đăng xuất
     function handleLogout() {
       localStorage.removeItem('isLoggedIn');
       window.location.href = 'index.html';
     }
 
-    // --- 2. Khởi tạo Biến Toàn Cục & LocalStorage Data ---
-    let studentName = localStorage.getItem('selected_student_name');
-    let studentType = localStorage.getItem('selected_student_type');
-    let lessonTopic = localStorage.getItem('selected_lesson_topic');
-    let apiKey = localStorage.getItem('gemini_api_key');
+    // 2. Lấy dữ liệu học sinh & bài học từ localStorage
+    const studentName = localStorage.getItem('selected_student_name');
+    const studentType = localStorage.getItem('selected_student_type');
+    const lessonTopic = localStorage.getItem('selected_lesson_topic');
 
-    let chatHistoryLog = []; // Lưu lịch sử hội thoại [{role: 'user'|'model', parts: [{text}]}]
+    const emptyState = document.getElementById('emptyState');
+    const classroomUI = document.getElementById('classroomUI');
 
-    // Kiểm tra ngôn ngữ dạy
-    function isEnglishTopic(topic) {
-      if (!topic) return false;
-      const lower = topic.toLowerCase();
-      return lower.includes('tiếng anh') || lower.includes('english') || lower.includes('tiếng anh 10');
+    // Kiểm tra bẫy lỗi Empty State
+    if (!studentName || !studentType || !lessonTopic) {
+      emptyState.classList.remove('hidden');
+      emptyState.classList.add('flex');
+    } else {
+      classroomUI.classList.remove('hidden');
+      classroomUI.classList.add('flex');
+
+      document.getElementById('studentName').innerText = studentName;
+      document.getElementById('lessonTopic').innerText = `Chủ đề: ${lessonTopic}`;
+      
+      const badge = document.getElementById('studentTypeBadge');
+      if (studentType === 'ngo-ngac') badge.innerText = 'Dễ • Ngơ ngác';
+      else if (studentType === 'thong-minh') badge.innerText = 'Thử thách • Lơ đễnh';
+      else if (studentType === 'nghich-ngom') badge.innerText = 'Hard Mode 🔥 • Nghịch ngợm';
+      else badge.innerText = studentType;
+
+      // Khởi tạo cuộc trò chuyện
+      initClassroom();
     }
 
-    // --- 3. Tạo System Instruction với Quy tắc & Tính cách Học Sinh ---
-    function getSystemInstruction(type, name, topic) {
-      const languageNote = isEnglishTopic(topic) 
-        ? "BẮT BUỘC: Vì chủ đề bài học là Tiếng Anh, học sinh BẮT BUỘC phải trả lời bằng Tiếng Anh trẻ em 10 tuổi (có thể nói tự nhiên, câu ngắn, teencode trẻ em)." 
-        : "Ngôn ngữ trả lời: Tiếng Việt trẻ em 10 tuổi.";
-
-      const globalRules = `
-[QUY TẮC CHUNG CHO CẢ 3 HỌC SINH]:
+    // 3. Xây dựng System Prompt theo cấu hình tính cách
+    function getSystemPrompt() {
+      const globalRules = `QUY TẮC CHUNG CHO CẢ 3 HỌC SINH:
 1. ĐÚNG ĐỘ TUỔI 10 TUỔI: Tuyệt đối KHÔNG ĐƯỢC hiểu ngay bài giảng trong 1-3 câu đầu tiên. Cần thời gian, cần ví dụ đơn giản và phản ứng tự nhiên của trẻ con.
-2. ${languageNote}
-3. Xưng hô: Em/Con và Thầy/Cô (hoặc xưng Teacher nếu nói tiếng Anh).
-4. Phản hồi ngắn gọn, chân thực như trò chuyện trong lớp học.`;
+2. TỰ ĐỘNG CHUYỂN NGÔN NGỮ: Nếu chủ đề bài học ("${lessonTopic}") có chứa từ "Tiếng Anh", "English" hoặc người dùng nói bằng tiếng Anh, AI BẮT BUỘC phải phản hồi bằng Tiếng Anh trẻ em 10 tuổi. Các môn khác dùng Tiếng Việt.`;
 
       let personalityPrompt = "";
 
-      if (type === 'ngo-ngac') {
+      if (studentType === 'ngo-ngac') {
         personalityPrompt = `Bạn là Huy, học sinh 10 tuổi. Tính cách: Ngoan ngoãn, lễ phép, vâng lời nhưng ĐẦU ÓC CỰC KỲ NGƠ NGÁC, tiếp thu chậm. Luôn dạ/thưa. Khi nghe 1-3 câu đầu, Huy chỉ gật đầu 'Dạ vâng' nhưng bị hỏi lại thì lộ ngay là chưa hiểu gì và hỏi lại từ khó. Cần người dạy giải thích rất sâu và lấy ví dụ đơn giản ít nhất 2-3 lần mới hiểu ra. Nếu dạy Tiếng Anh, Huy nói ngập ngừng, hay hỏi lại từ vựng.`;
-      } else if (type === 'thong-minh') {
+      } else if (studentType === 'thong-minh') {
         personalityPrompt = `Bạn là Sarah, học sinh 10 tuổi. Tính cách: Thông minh nhưng KHÔNG HỢP TÁC, lơ đễnh, thích vẽ tranh/ngó ra cửa sổ. Khi người dạy nói một đoạn dài, Sarah sẽ thản nhiên hỏi: 'Ơ... thầy/cô vừa nói gì cơ? Em mải nhìn ra ngoài cửa sổ nên không nghe rõ, thầy/cô nói lại từ đầu đi!'. Rất thông minh nên nếu người dạy kích thích bằng cách thách thức ('Bài này khó lắm chắc em không hiểu nổi'), Sarah sẽ lập tức tập trung lại giải cực nhanh. Nếu dạy Tiếng Anh, Sarah nói rất chuẩn nhưng hay trả lời lơ đễnh.`;
-      } else if (type === 'nghich-ngom') {
+      } else if (studentType === 'nghich-ngom') {
         personalityPrompt = `Bạn là Alex, học sinh 10 tuổi đại diện cho Chế độ Hard Mode. Tính cách: Vừa NGƠ NGÁC vừa NGHỊCH NGỢM, cực kỳ tiêu cực, hay cãi bướng, đòi đi chơi game Roblox/Minecraft. Alex chê bài giảng chán, đòi đi vệ sinh, đòi nghỉ học nếu người dạy giảng lý thuyết suông. Bắt buộc người dạy phải lấy ví dụ quậy phá (game, siêu nhân, nổ bóng) mới chịu nghe. Nếu người dạy giải thích thiếu logic, Alex sẽ bắt lỗi và cãi lại ngay. Nếu dạy Tiếng Anh, Alex dùng teencode/slang trẻ con ('Boring!', 'No way', 'Teacher you are so confusing bruh!').`;
       } else {
-        personalityPrompt = `Bạn là học sinh 10 tuổi tên là ${name || 'Bé'}.`;
+        personalityPrompt = `Bạn là một học sinh 10 tuổi tên là ${studentName}. Môn học hiện tại là ${lessonTopic}.`;
       }
 
-      return `${personalityPrompt}\n${globalRules}\nChủ đề bài học hiện tại: ${topic}`;
+      return `${globalRules}\n\nTHÔNG TIN HỌC SINH:\n${personalityPrompt}`;
     }
 
-    // --- 4. Kiểm tra Validation & Render UI ---
-    window.addEventListener('DOMContentLoaded', () => {
-      const emptyState = document.getElementById('emptyStateContainer');
-      const classroom = document.getElementById('classroomContainer');
-
-      // Empty State Check: Thiếu bất kỳ biến nào trong 3 biến
-      if (!studentName || !studentType || !lessonTopic) {
-        emptyState.classList.remove('hidden');
-        classroom.classList.add('hidden');
-        return;
+    // 4. HÀM GỌI GEMINI API chuẩn gemini-2.0-flash
+    async function callGeminiAPI(systemPrompt, userMessage) {
+      const apiKey = localStorage.getItem('gemini_api_key');
+      if (!apiKey) {
+        alert("Chưa có API Key! Vui lòng cấu hình ở trang Học sinh.");
+        throw new Error("Chưa có API Key");
       }
 
-      // Đã có đầy đủ biến -> Bật lớp học
-      emptyState.classList.add('hidden');
-      classroom.classList.remove('hidden');
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-      // Setup thông tin Header
-      document.getElementById('headerStudentName').innerText = studentName;
-      document.getElementById('headerLessonTopic').innerText = lessonTopic;
+      const payload = {
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: `${systemPrompt}\n\nNgười dùng nói: ${userMessage}` }]
+          }
+        ]
+      };
 
-      const badge = document.getElementById('headerStudentBadge');
-      const avatarContainer = document.getElementById('studentAvatarContainer');
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-      if (studentType === 'ngo-ngac') {
-        badge.innerText = 'Huy - Ngơ Ngơ (Mức Dễ)';
-        badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-900/60 text-blue-300 border border-blue-500/30';
-        avatarContainer.innerHTML = '👦🏻';
-      } else if (studentType === 'thong-minh') {
-        badge.innerText = 'Sarah - Thông Minh/Lơ Đễnh';
-        badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-purple-900/60 text-purple-300 border border-purple-500/30';
-        avatarContainer.innerHTML = '👧🏼';
-      } else if (studentType === 'nghich-ngom') {
-        badge.innerText = 'Alex - Hard Mode 🔥';
-        badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-rose-900/60 text-rose-300 border border-rose-500/30';
-        avatarContainer.innerHTML = '🧒🏽';
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error?.message || 'Lỗi không xác định từ Google API');
+        }
+
+        return data.candidates[0].content.parts[0].text;
+      } catch (error) {
+        console.error("API Error:", error);
+        throw error;
       }
+    }
 
-      // Kích hoạt tự động tin nhắn mở đầu
-      triggerAutoFirstMessage();
-    });
-
-    // --- 5. Render Bong bóng Tin nhắn Chat ---
+    // 5. Hiển thị tin nhắn lên UI
     function appendMessage(sender, text, isError = false) {
       const chatHistory = document.getElementById('chatHistory');
-      const msgWrapper = document.createElement('div');
-      msgWrapper.className = `flex flex-col ${sender === 'teacher' ? 'items-end' : 'items-start'} animate-fade-in`;
+      const isTeacher = sender === 'teacher';
 
-      let bubbleHtml = '';
+      const wrapper = document.createElement('div');
+      wrapper.className = `flex ${isTeacher ? 'justify-end' : 'justify-start'}`;
 
-      if (sender === 'teacher') {
-        bubbleHtml = `
-          <div class="flex items-end space-x-2 max-w-[85%] sm:max-w-[75%] flex-row-reverse space-x-reverse">
-            <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow">
-              Thầy
-            </div>
-            <div class="bg-brand-500 text-white p-3.5 rounded-2xl rounded-br-xs shadow-sm text-sm leading-relaxed">
-              ${escapeHtml(text)}
-            </div>
-          </div>
-          <span class="text-[10px] text-slate-400 mt-1 mr-10">Thầy/Cô</span>
-        `;
-      } else {
-        if (isError) {
-          bubbleHtml = `
-            <div class="flex items-start space-x-2 max-w-[85%] sm:max-w-[75%]">
-              <div class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow">
-                !
-              </div>
-              <div class="bg-red-50 border border-red-200 text-red-700 p-3.5 rounded-2xl rounded-bl-xs shadow-sm text-sm leading-relaxed">
-                ${escapeHtml(text)}
-              </div>
-            </div>
-            <span class="text-[10px] text-red-400 mt-1 ml-10">Lỗi Hệ Thống / API</span>
-          `;
-        } else {
-          bubbleHtml = `
-            <div class="flex items-start space-x-2 max-w-[85%] sm:max-w-[75%]">
-              <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold flex-shrink-0 shadow">
-                ${studentName ? studentName.charAt(0) : 'B'}
-              </div>
-              <div class="bg-white border border-slate-200 text-slate-800 p-3.5 rounded-2xl rounded-bl-xs shadow-sm text-sm leading-relaxed">
-                ${escapeHtml(text)}
-              </div>
-            </div>
-            <span class="text-[10px] text-slate-400 mt-1 ml-10">${studentName || 'Học sinh'}</span>
-          `;
-        }
-      }
+      const messageBox = document.createElement('div');
+      messageBox.className = `max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+        isTeacher 
+          ? 'bg-brand-600 text-white rounded-br-none' 
+          : isError 
+            ? 'bg-rose-50 text-rose-700 border border-rose-200 rounded-bl-none' 
+            : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none'
+      }`;
 
-      msgWrapper.innerHTML = bubbleHtml;
-      chatHistory.appendChild(msgWrapper);
+      const senderTitle = document.createElement('div');
+      senderTitle.className = `text-[10px] font-bold mb-1 opacity-75 ${isTeacher ? 'text-brand-100' : isError ? 'text-rose-500' : 'text-slate-400'}`;
+      senderTitle.innerText = isTeacher ? 'Thầy / Cô' : (isError ? 'Lỗi Hệ Thống' : studentName);
+
+      const content = document.createElement('div');
+      content.className = 'whitespace-pre-wrap leading-relaxed';
+      content.innerText = text;
+
+      messageBox.appendChild(senderTitle);
+      messageBox.appendChild(content);
+      wrapper.appendChild(messageBox);
+      chatHistory.appendChild(wrapper);
 
       // Auto-scroll
       chatHistory.scrollTop = chatHistory.scrollHeight;
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.innerText = text;
-      return div.innerHTML.replace(/\n/g, '<br>');
-    }
-
-    // --- 6. Gọi Gemini API (FIX CHUẨN ENDPOINT VÀ STRUCTURE) ---
-    async function callGeminiAPI(messages, systemInstruction) {
-      if (!apiKey) {
-        apiKey = prompt("Chưa tìm thấy Gemini API Key. Vui lòng nhập API Key của bạn:");
-        if (apiKey) {
-          localStorage.setItem('gemini_api_key', apiKey);
-        } else {
-          throw new Error("Không tìm thấy API Key. Vui lòng kiểm tra lại API Key ở trang Học Sinh!");
-        }
-      }
-
-      // URL chuẩn v1beta không bị duplicate 'models/'
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-      const payload = {
-        contents: messages,
-        systemInstruction: {
-          parts: [{ text: systemInstruction }]
-        },
-        generationConfig: {
-          temperature: 0.9,
-          maxOutputTokens: 500
-        }
-      };
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Gemini API Error Detail:", errorData);
-        throw new Error(errorData.error?.message || `Lỗi kết nối API (${response.status})`);
-      }
-
-      const data = await response.json();
-      const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      
-      if (!replyText) {
-        throw new Error("Phản hồi từ Gemini API không đúng cấu trúc.");
-      }
-
-      return replyText;
-    }
-
-    // --- 7. Tự động gửi lời chào ban đầu ---
-    async function triggerAutoFirstMessage() {
+    // 6. Quản lý trạng thái chờ phản hồi API
+    function setLoading(isLoading) {
       const thinkingIndicator = document.getElementById('thinkingIndicator');
-      thinkingIndicator.classList.remove('hidden');
-
-      const systemInstruction = getSystemInstruction(studentType, studentName, lessonTopic);
-      
-      const firstPromptMessage = isEnglishTopic(lessonTopic)
-        ? `Hello! Say hello to your teacher for today's lesson: "${lessonTopic}" according to your assigned personality.`
-        : `Em hãy gửi lời chào ban đầu tới Thầy/Cô khi vừa bước vào lớp học bài: "${lessonTopic}" đúng theo tính cách của em.`;
-
-      const initialContents = [
-        { role: 'user', parts: [{ text: firstPromptMessage }] }
-      ];
-
-      try {
-        const reply = await callGeminiAPI(initialContents, systemInstruction);
-        thinkingIndicator.classList.add('hidden');
-        
-        appendMessage('student', reply);
-
-        chatHistoryLog.push({ role: 'user', parts: [{ text: firstPromptMessage }] });
-        chatHistoryLog.push({ role: 'model', parts: [{ text: reply }] });
-
-      } catch (err) {
-        thinkingIndicator.classList.add('hidden');
-        appendMessage('student', `Lỗi API: Không thể kết nối với Gemini. Vui lòng kiểm tra lại API Key ở trang Học sinh! (${err.message})`, true);
-      }
-    }
-
-    // --- 8. Xử lý Gửi Bài Giảng / Câu Hỏi ---
-    async function handleSendMessage(event) {
-      if (event) event.preventDefault();
-
-      const promptInput = document.getElementById('userPrompt');
       const sendBtn = document.getElementById('sendBtn');
-      const thinkingIndicator = document.getElementById('thinkingIndicator');
-      const userText = promptInput.value.trim();
+      const userInput = document.getElementById('userInput');
 
-      if (!userText) return;
-
-      appendMessage('teacher', userText);
-      promptInput.value = '';
-
-      sendBtn.disabled = true;
-      promptInput.disabled = true;
-      thinkingIndicator.classList.remove('hidden');
-
-      chatHistoryLog.push({ role: 'user', parts: [{ text: userText }] });
-
-      const systemInstruction = getSystemInstruction(studentType, studentName, lessonTopic);
-
-      try {
-        const reply = await callGeminiAPI(chatHistoryLog, systemInstruction);
-        
-        chatHistoryLog.push({ role: 'model', parts: [{ text: reply }] });
-        appendMessage('student', reply);
-
-      } catch (err) {
-        appendMessage('student', `Lỗi API: Không thể kết nối với Gemini. Vui lòng kiểm tra lại API Key ở trang Học sinh! (${err.message})`, true);
-      } finally {
-        sendBtn.disabled = false;
-        promptInput.disabled = false;
+      if (isLoading) {
+        thinkingIndicator.classList.remove('hidden');
+        sendBtn.disabled = true;
+        userInput.disabled = true;
+      } else {
         thinkingIndicator.classList.add('hidden');
-        promptInput.focus();
+        sendBtn.disabled = false;
+        userInput.disabled = false;
+        userInput.focus();
       }
     }
 
-    function handleKeyDown(event) {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        handleSendMessage();
+    // 7. Tin nhắn mở đầu tự động (Auto First Message)
+    async function initClassroom() {
+      setLoading(true);
+      try {
+        const systemPrompt = getSystemPrompt();
+        const initInstruction = `[HỆ THỐNG]: Bạn hãy gửi lời chào đầu tiên tới thầy/cô giáo. Hãy chào đúng tính cách của bạn và nhắc tới chủ đề bài học hôm nay là "${lessonTopic}". Ngắn gọn 1-2 câu.`;
+        
+        const reply = await callGeminiAPI(systemPrompt, initInstruction);
+        appendMessage('student', reply);
+      } catch (err) {
+        appendMessage('student', `Lỗi API: Không thể kết nối với Gemini (${err.message}). Vui lòng kiểm tra lại API Key ở trang Học sinh!`, true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // 8. Xử lý gửi tin nhắn từ phía Thầy/Cô
+    async function handleSendMessage(e) {
+      if (e) e.preventDefault();
+
+      const userInput = document.getElementById('userInput');
+      const text = userInput.value.trim();
+
+      if (!text) return;
+
+      // Reset input
+      userInput.value = '';
+
+      // Đưa tin nhắn giáo viên lên chat
+      appendMessage('teacher', text);
+
+      // Gọi API Gemini
+      setLoading(true);
+      try {
+        const systemPrompt = getSystemPrompt();
+        const reply = await callGeminiAPI(systemPrompt, text);
+        appendMessage('student', reply);
+      } catch (err) {
+        appendMessage('student', `Lỗi API: Không thể kết nối với Gemini (${err.message}). Vui lòng kiểm tra lại API Key ở trang Học sinh!`, true);
+      } finally {
+        setLoading(false);
       }
     }
   </script>
