@@ -182,7 +182,7 @@
       return `${globalRules}\n\nTHÔNG TIN HỌC SINH:\n${personalityPrompt}`;
     }
 
-    // HÀM GỌI GEMINI API SỬ DỤNG GEMINI-2.0-FLASH CHUẨN
+    // HÀM GỌI GEMINI API SỬ DỤNG GEMINI-3.8-FLASH MỚI NHẤT
     async function callGeminiAPI(systemPrompt, userMessage) {
       const apiKey = localStorage.getItem('gemini_api_key');
       if (!apiKey) {
@@ -190,35 +190,28 @@
         throw new Error("Chưa có API Key");
       }
 
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
-      const payload = {
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: `${systemPrompt}\n\nNgười dùng nói: ${userMessage}` }]
-          }
-        ]
-      };
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: `System Instruction: ${systemPrompt}\n\nUser Message: ${userMessage}` }]
+            }
+          ]
+        })
+      });
 
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error?.message || 'Lỗi không xác định từ Google API');
-        }
-
-        return data.candidates[0].content.parts[0].text;
-      } catch (error) {
-        console.error("API Error:", error);
-        throw error;
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'Lỗi không xác định từ Google API');
       }
+
+      return data.candidates[0].content.parts[0].text;
     }
 
     function appendMessage(sender, text, isError = false) {
