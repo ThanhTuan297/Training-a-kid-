@@ -367,10 +367,10 @@
 
             const fullSystemPrompt = `${globalSystemRules}\n\n[TÍNH CÁCH RIÊNG CỦA EM]:\n${config.systemPrompt}`;
 
-            // Danh sách các model theo thứ tự ưu tiên (Gemini 1.5 Flash Latest -> Gemini 2.0 Flash -> Gemini 1.5 Flash)
+            // Danh sách các model theo thứ tự ưu tiên (Mặc định dùng gemini-2.0-flash và gemini-1.5-flash-latest)
             const modelsToTry = [
-                'gemini-1.5-flash-latest',
                 'gemini-2.0-flash',
+                'gemini-1.5-flash-latest',
                 'gemini-1.5-flash'
             ];
 
@@ -402,7 +402,7 @@
 
             let lastError = null;
 
-            // Thử từng model nếu gặp lỗi 404
+            // Thử lần lượt các model để đảm bảo khắc phục hoàn toàn lỗi 404
             for (const modelName of modelsToTry) {
                 const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
@@ -438,7 +438,7 @@
                         throw new Error('API Key không hợp lệ hoặc đã hết hạn.');
                     }
 
-                    // Nếu 404 (Model not found), thử model tiếp theo trong vòng lặp
+                    // Nếu 404 (Model not found), thử model tiếp theo trong danh sách
                     if (response.status === 404) {
                         console.warn(`Model ${modelName} trả về 404, thử model tiếp theo...`);
                         lastError = new Error(`Model ${modelName} không tìm thấy.`);
