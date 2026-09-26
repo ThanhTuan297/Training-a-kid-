@@ -1,397 +1,416 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pedagogy Classroom Login - ELT Pedagogy AI</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Font: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    #left-hand, #right-hand {
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: center;
-    }
-
-    .eye-pupil {
-      transition: transform 0.25s ease-out, opacity 0.25s ease;
-    }
-
-    /* --- MASCOT HAND STATES VIA CSS TRANSFORMS --- */
-    
-    /* State 1: Cover Eyes Tight (Password focused & hidden) */
-    .state-cover #left-hand {
-      transform: translate(30px, -22px) rotate(15deg);
-    }
-    .state-cover #right-hand {
-      transform: translate(-30px, -22px) rotate(-15deg);
-    }
-
-    /* State 2: Peek at Password (Eye button toggled -> Hands open slightly) */
-    .state-peek #left-hand {
-      transform: translate(12px, -8px) rotate(-10deg);
-    }
-    .state-peek #right-hand {
-      transform: translate(-12px, -8px) rotate(10deg);
-    }
-
-    /* Natural Eye Blinking Animation */
-    @keyframes blink {
-      0%, 90%, 100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.1); }
-    }
-
-    .blinking-eye {
-      transform-origin: 96px;
-      animation: blink 4s infinite;
-    }
-  </style>
-</head>
-<body class="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-indigo-100 via-sky-100 to-pink-100 relative overflow-hidden select-none">
-
-  <!-- Background Decorative Blurs -->
-  <div class="absolute top-10 left-10 w-72 h-72 bg-indigo-200/50 rounded-full blur-3xl pointer-events-none"></div>
-  <div class="absolute bottom-10 right-10 w-96 h-96 bg-pink-200/50 rounded-full blur-3xl pointer-events-none"></div>
-
-  <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/80 p-6 sm:p-8 relative z-10">
-    
-    <!-- Card Header -->
-    <div class="flex items-center justify-between mb-4">
-      <!-- Pill Badge -->
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-        <i class="fa-solid fa-graduation-cap"></i>
-        <span>ELT Pedagogy AI Tool</span>
-      </div>
-
-      <!-- Admin / Student Mode Toggle Link -->
-      <button type="button" onclick="toggleAdminMode()" id="admin-btn" class="text-xs font-semibold text-slate-500 hover:text-indigo-600 hover:bg-slate-100 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span id="admin-btn-text">Admin Portal</span>
-      </button>
-    </div>
-
-    <div id="mascot-wrapper" class="relative w-40 h-40 mx-auto mb-1 flex items-center justify-center">
-      
-      <!-- Glowing Halo behind Tim -->
-      <div id="mascot-glow" class="absolute inset-0 rounded-full bg-indigo-200 blur-xl opacity-60 transition-all duration-500"></div>
-
-      <!-- Tim SVG Graphic -->
-      <svg id="tim-svg" viewBox="0 0 200 200" class="w-full h-full relative z-10 drop-shadow-md">
-        <!-- Ground Shadow -->
-        <ellipse cx="100" cy="185" rx="55" ry="9" fill="#000000" opacity="0.12" />
-
-        <!-- Body / Shirt -->
-        <g id="body">
-          <path d="M 60 145 C 60 125, 140 125, 140 145 L 148 185 L 52 185 Z" fill="#4f46e5" id="shirt-color" />
-          <!-- Yellow Collar -->
-          <path d="M 85 135 L 100 150 L 115 135 L 100 140 Z" fill="#fbbf24" />
-          <circle cx="100" cy="158" r="4" fill="#f59e0b" />
-        </g>
-
-        <!-- Head Group -->
-        <g id="head">
-          <!-- Ears -->
-          <circle cx="48" cy="95" r="12" fill="#fbcfe8" />
-          <circle cx="48" cy="95" r="7" fill="#f472b6" opacity="0.4" />
-          <circle cx="152" cy="95" r="12" fill="#fbcfe8" />
-          <circle cx="152" cy="95" r="7" fill="#f472b6" opacity="0.4" />
-
-          <!-- Face -->
-          <rect x="52" y="50" width="96" height="90" rx="45" fill="#fde047" /> 
-          <rect x="54" y="52" width="92" height="86" rx="43" fill="#ffe4e6" />
-
-          <!-- Hair (Dark Indigo with Top Swirl) -->
-          <path d="M 52 80 C 50 40, 150 40, 148 80 C 135 60, 120 75, 100 60 C 80 75, 65 60, 52 80 Z" fill="#1e1b4b" />
-          <path d="M 90 38 Q 100 20 110 35 Q 100 30 90 38" fill="#1e1b4b" />
-
-          <!-- Rosy Cheeks -->
-          <circle cx="68" cy="106" r="8" fill="#fb7185" opacity="0.5" />
-          <circle cx="132" cy="106" r="8" fill="#fb7185" opacity="0.5" />
-
-          <!-- Eyes Group -->
-          <g id="eyes-group" class="blinking-eye">
-            <!-- Left Eye -->
-            <ellipse cx="80" cy="96" rx="9" ry="11" fill="#1e1b4b" />
-            <ellipse id="pupil-left" class="eye-pupil" cx="80" cy="96" rx="9" ry="11" fill="#1e1b4b" />
-            <circle id="glint-left-1" cx="77" cy="92" r="3.5" fill="#ffffff" />
-            <circle id="glint-left-2" cx="82" cy="98" r="1.5" fill="#ffffff" />
-
-            <!-- Right Eye -->
-            <ellipse cx="120" cy="96" rx="9" ry="11" fill="#1e1b4b" />
-            <ellipse id="pupil-right" class="eye-pupil" cx="120" cy="96" rx="9" ry="11" fill="#1e1b4b" />
-            <circle id="glint-right-1" cx="117" cy="92" r="3.5" fill="#ffffff" />
-            <circle id="glint-right-2" cx="122" cy="98" r="1.5" fill="#ffffff" />
-          </g>
-
-          <!-- Mouth -->
-          <g id="mouth">
-            <path id="mouth-path" d="M 88 112 Q 100 123 112 112" fill="none" stroke="#1e1b4b" stroke-width="3.5" stroke-linecap="round" />
-          </g>
-        </g>
-
-        <!-- Hands (Animated via JavaScript state classes) -->
-        <!-- Left Hand -->
-        <g id="left-hand">
-          <circle cx="50" cy="138" r="14" fill="#ffe4e6" stroke="#fbcfe8" stroke-width="2" />
-        </g>
-
-        <!-- Right Hand -->
-        <g id="right-hand">
-          <circle cx="150" cy="138" r="14" fill="#ffe4e6" stroke="#fbcfe8" stroke-width="2" />
-        </g>
-      </svg>
-    </div>
-
-    <!-- Dynamic Speech Bubble -->
-    <div class="min-h-[28px] flex items-center justify-center mb-2">
-      <span id="speech-bubble" class="text-xs font-semibold px-3 py-0.5 rounded-full bg-indigo-50 text-indigo-700 transition-all duration-300">
-        "Hi! I'm Tim (10 yo). Ready to practice teaching me?"
-      </span>
-    </div>
-
-    <!-- Title Header -->
-    <div class="text-center mb-6">
-      <h1 id="page-title" class="text-xl font-extrabold text-slate-800">Pedagogy Classroom Login</h1>
-      <p id="page-subtitle" class="text-xs text-slate-500 mt-1">Practice English teaching 1-on-1 with Tim, your AI student</p>
-    </div>
-
-    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-      
-      <!-- Error Message Banner -->
-      <div id="error-banner" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-medium flex items-center gap-2">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span id="error-text">Please fill in both Email and Password!</span>
-      </div>
-
-      <!-- Field 1: Email / Username -->
-      <div class="space-y-1">
-        <label class="text-xs font-bold text-slate-700 block">Student Email / Username</label>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            <i class="fa-regular fa-envelope text-sm"></i>
-          </div>
-          <input
-            type="email"
-            id="email-input"
-            placeholder="teacher.student@university.edu"
-            class="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
-          />
-        </div>
-      </div>
-
-      <!-- Field 2: Password -->
-      <div class="space-y-1">
-        <div class="flex items-center justify-between">
-          <label class="text-xs font-bold text-slate-700 block">Password</label>
-          <a href="#" onclick="alert('Please contact your faculty administrator to reset your password.'); return false;" class="text-xs text-indigo-600 hover:underline font-semibold">Forgot password?</a>
-        </div>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            <i class="fa-solid fa-lock text-sm"></i>
-          </div>
-          <input
-            type="password"
-            id="password-input"
-            placeholder="••••••••"
-            class="w-full pl-10 pr-11 py-2.5 bg-slate-50/70 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
-          />
-          <!-- Eye Toggle Button -->
-          <button
-            type="button"
-            id="toggle-eye-btn"
-            title="Show/Hide password"
-            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition"
-          >
-            <i id="eye-icon" class="fa-regular fa-eye"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Remember Me -->
-      <div class="flex items-center text-xs">
-        <label class="flex items-center gap-2 text-slate-600 cursor-pointer select-none">
-          <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-          <span>Remember me on this device</span>
-        </label>
-      </div>
-
-      <!-- Action Buttons Container -->
-      <div class="space-y-2 pt-1">
-        <!-- Main Login Submit Button -->
-        <button
-          type="submit"
-          id="submit-btn"
-          class="w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/25 transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <span id="btn-text">Sign In</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
-        </button>
-
-        <!-- Quick Demo Mode Button -->
-        <button
-          type="button"
-          onclick="goToDemo()"
-          class="w-full py-2.5 px-4 rounded-xl font-bold text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <i class="fa-solid fa-bolt text-amber-500"></i>
-          <span>Quick Demo Mode (Direct Access)</span>
-        </button>
-      </div>
-    </form>
-
-    <!-- Footer Note -->
-    <div class="mt-5 pt-4 border-t border-slate-100 text-center">
-      <p class="text-[11px] text-slate-400">ELT Pedagogy AI Research Project • Department of English</p>
-    </div>
-  </div>
-
-  <script>
-    // Elements DOM References
-    const mascotWrapper = document.getElementById('mascot-wrapper');
-    const speechBubble = document.getElementById('speech-bubble');
-    const emailInput = document.getElementById('email-input');
-    const passwordInput = document.getElementById('password-input');
-    const toggleEyeBtn = document.getElementById('toggle-eye-btn');
-    const eyeIcon = document.getElementById('eye-icon');
-    const pupilLeft = document.getElementById('pupil-left');
-    const pupilRight = document.getElementById('pupil-right');
-    const mouthPath = document.getElementById('mouth-path');
-    
-    let isShowPassword = false;
-    let isAdmin = false;
-
-    // --- MASCOT EXPRESSION CONTROLLER ---
-    function updateMascotState() {
-      const hasPassword = passwordInput.value.length > 0;
-      const isFocused = document.activeElement === passwordInput;
-
-      // Clear previous classes and pupil offsets
-      mascotWrapper.classList.remove('state-cover', 'state-peek');
-      pupilLeft.style.transform = 'translate(0, 0)';
-      pupilRight.style.transform = 'translate(0, 0)';
-
-      if ((isFocused || hasPassword) && !isShowPassword) {
-        // STATE 1: Cover Eyes Tight
-        mascotWrapper.classList.add('state-cover');
-        speechBubble.textContent = "🙈 Tim is covering his eyes! Secret password!";
-        speechBubble.className = "text-xs font-semibold px-3 py-0.5 rounded-full bg-indigo-50 text-indigo-700 transition-all duration-300";
-        mouthPath.setAttribute('d', 'M 90 115 Q 95 112 100 115 T 110 115');
-      } 
-      else if ((isFocused || hasPassword) && isShowPassword) {
-        // STATE 2: Peek at Password
-        mascotWrapper.classList.add('state-peek');
-        pupilLeft.style.transform = 'translate(0px, 5px)';
-        pupilRight.style.transform = 'translate(0px, 5px)';
-        speechBubble.textContent = "👀 Peek-a-boo! Tim is glancing at your password!";
-        speechBubble.className = "text-xs font-semibold px-3 py-0.5 rounded-full bg-amber-50 text-amber-700 transition-all duration-300";
-        mouthPath.setAttribute('d', 'M 95 115 Q 100 120 105 115');
-      } 
-      else if (document.activeElement === emailInput) {
-        // STATE 3: Look down at Email Input
-        pupilLeft.style.transform = 'translate(0px, 3px)';
-        pupilRight.style.transform = 'translate(0px, 3px)';
-        speechBubble.textContent = "✏️ Type in your Student Email address below!";
-        speechBubble.className = "text-xs font-semibold px-3 py-0.5 rounded-full bg-sky-50 text-sky-700 transition-all duration-300";
-        mouthPath.setAttribute('d', 'M 88 112 Q 100 123 112 112');
-      } 
-      else {
-        // STATE 4: Normal State
-        speechBubble.textContent = '"Hi! I\'m Tim (10 yo). Ready to practice teaching me?"';
-        speechBubble.className = "text-xs font-semibold px-3 py-0.5 rounded-full bg-slate-100 text-slate-600 transition-all duration-300";
-        mouthPath.setAttribute('d', 'M 88 112 Q 100 123 112 112');
-      }
-    }
-
-    // --- EVENT LISTENERS ---
-    passwordInput.addEventListener('focus', updateMascotState);
-    passwordInput.addEventListener('blur', updateMascotState);
-    passwordInput.addEventListener('input', updateMascotState);
-
-    emailInput.addEventListener('focus', updateMascotState);
-    emailInput.addEventListener('blur', updateMascotState);
-
-    // Toggle Password Visibility
-    toggleEyeBtn.addEventListener('click', () => {
-      isShowPassword = !isShowPassword;
-      passwordInput.type = isShowPassword ? 'text' : 'password';
-      
-      if (isShowPassword) {
-        eyeIcon.className = 'fa-regular fa-eye-slash';
-      } else {
-        eyeIcon.className = 'fa-regular fa-eye';
-      }
-      
-      updateMascotState();
-    });
-
-    // Toggle Admin Mode vs Student Mode
-    function toggleAdminMode() {
-      isAdmin = !isAdmin;
-      const shirtColor = document.getElementById('shirt-color');
-      const adminBtnText = document.getElementById('admin-btn-text');
-      const pageTitle = document.getElementById('page-title');
-      const pageSubtitle = document.getElementById('page-subtitle');
-      const mascotGlow = document.getElementById('mascot-glow');
-      const submitBtn = document.getElementById('submit-btn');
-
-      if (isAdmin) {
-        shirtColor.setAttribute('fill', '#312e81');
-        adminBtnText.textContent = "Student Mode";
-        pageTitle.textContent = "Administrator Portal";
-        pageSubtitle.textContent = "Manage course settings & AI student parameters";
-        mascotGlow.className = "absolute inset-0 rounded-full bg-amber-200 blur-xl opacity-60 transition-all duration-500";
-        submitBtn.className = "w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-600/25 transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0";
-      } else {
-        shirtColor.setAttribute('fill', '#4f46e5');
-        adminBtnText.textContent = "Admin Portal";
-        pageTitle.textContent = "Pedagogy Classroom Login";
-        pageSubtitle.textContent = "Practice English teaching 1-on-1 with Tim, your AI student";
-        mascotGlow.className = "absolute inset-0 rounded-full bg-indigo-200 blur-xl opacity-60 transition-all duration-500";
-        submitBtn.className = "w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/25 transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0";
-      }
-    }
-
-    // Direct redirection for Quick Demo Mode
-    function goToDemo() {
-      window.location.href = "trangchu.html";
-    }
-
-    // Form submission handler
-    function handleLogin(event) {
-      event.preventDefault();
-      
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      const errorBanner = document.getElementById('error-banner');
-
-      if (!email || !password) {
-        errorBanner.classList.remove('hidden');
-        return;
-      }
-
-      errorBanner.classList.add('hidden');
-      const btnText = document.getElementById('btn-text');
-      btnText.textContent = "Signing in...";
-
-      setTimeout(() => {
-        if (isAdmin) {
-          window.location.href = "admin.html";
-        } else {
-          window.location.href = "trangchu.html";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELI10 - Đăng nhập / Đăng ký</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-      }, 400);
-    }
-  </script>
+
+        /* Gradient background mượt mà */
+        .bg-gradient-eli {
+            background: linear-gradient(135deg, #f0fdf4 0%, #e6f4ea 50%, #dcfce7 100%);
+        }
+
+        /* Animate tab transitions */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.25s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-eli min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 md:p-8">
+
+    <script>
+        // Inline check để tự động chuyển hướng nếu người dùng đã đăng nhập từ trước
+        (function checkExistingAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+            if (isAdmin) {
+                window.location.href = 'admin.html';
+            } else if (isLoggedIn) {
+                window.location.href = 'trangchu.html';
+            }
+        })();
+    </script>
+
+    <!-- Header Spacer -->
+    <div></div>
+
+    <main class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-emerald-900/5 border border-emerald-100/80 p-6 sm:p-8 relative overflow-hidden my-auto">
+        
+        <!-- Logo & Header -->
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500 text-white mb-3 shadow-lg shadow-emerald-500/30 transform hover:scale-105 transition-transform duration-200">
+                <i data-lucide="sprout" class="w-9 h-9"></i>
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">
+                ELI<span class="text-emerald-600">10</span>
+            </h1>
+            <p class="text-xs sm:text-sm font-medium text-slate-500 mt-1">
+                Học tập sáng tạo 
+            </p>
+        </div>
+
+        <!-- Notification Toast Box -->
+        <div id="alertBox" class="hidden mb-5 p-3.5 rounded-xl text-sm font-medium flex items-center gap-2.5 transition-all duration-300">
+            <i id="alertIcon" class="w-5 h-5 shrink-0"></i>
+            <span id="alertMessage" class="flex-1"></span>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex p-1 bg-slate-100 rounded-2xl mb-6 relative">
+            <button id="tabLoginBtn" onclick="switchTab('login')" 
+                class="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 text-emerald-700 bg-white shadow-sm flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-4 h-4"></i>
+                Đăng nhập
+            </button>
+            <button id="tabRegisterBtn" onclick="switchTab('register')" 
+                class="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                Đăng ký
+            </button>
+        </div>
+
+        <div id="loginTab" class="tab-content active">
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <!-- Username/Email -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                        Email hoặc Tên tài khoản
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="loginIdentifier" required placeholder="name@example.com"
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-slate-800 text-sm">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                            Mật khẩu
+                        </label>
+                        <a href="#" onclick="showToast('Tính năng quên mật khẩu đang được phát triển!', 'info'); return false;" 
+                           class="text-xs text-emerald-600 font-semibold hover:underline">Phục hồi?</a>
+                    </div>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="loginPassword" required placeholder="••••••••"
+                            class="w-full pl-11 pr-11 py-3 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-slate-800 text-sm">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword', 'loginPasswordIcon')" 
+                            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                            <i id="loginPasswordIcon" data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Role Selection Checkbox -->
+                <div class="pt-1">
+                    <label class="flex items-center gap-2.5 cursor-pointer select-none group">
+                        <input type="checkbox" id="adminRoleCheckbox" 
+                            class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 transition-colors">
+                        <span class="text-xs text-slate-600 group-hover:text-slate-900 font-medium flex items-center gap-1.5">
+                            <i data-lucide="shield-alert" class="w-4 h-4 text-emerald-600"></i>
+                            Đăng nhập với tư cách là Vua (Admin)
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                    class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/25 transition-all duration-200 flex items-center justify-center gap-2 mt-2">
+                    <span>Đăng Nhập</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+
+        <div id="registerTab" class="tab-content">
+            <form onsubmit="handleRegister(event)" class="space-y-3.5">
+                <!-- Full Name -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                        Họ và tên
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="user" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="regName" required placeholder="Nguyễn Văn A"
+                            class="w-full pl-11 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-slate-800 text-sm">
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                        Email
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="email" id="regEmail" required placeholder="hocvien@eli10.edu.vn"
+                            class="w-full pl-11 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-slate-800 text-sm">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                        Mật khẩu
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="regPassword" required placeholder="Tối thiểu 6 ký tự"
+                            class="w-full pl-11 pr-11 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-slate-800 text-sm">
+                        <button type="button" onclick="togglePasswordVisibility('regPassword', 'regPasswordIcon')" 
+                            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                            <i id="regPasswordIcon" data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                        Xác nhận mật khẩu
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="regConfirmPassword" required placeholder="Nhập lại mật khẩu"
+                            class="w-full pl-11 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-slate-800 text-sm">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                    class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/25 transition-all duration-200 flex items-center justify-center gap-2 mt-4">
+                    <span>Tạo Tài Khoản</span>
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer note -->
+        <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+            <p class="text-xs text-slate-400">
+                Bằng cách đăng nhập, bạn đồng ý với <a href="#" class="underline hover:text-slate-600">Điều khoản</a> & <a href="#" class="underline hover:text-slate-600">Bảo mật</a> của ELI10.
+            </p>
+        </div>
+    </main>
+
+    <footer class="w-full max-w-md mt-6 text-center">
+        <!-- 
+          =======================================================================
+          // TODO: Xóa nút này khi đưa vào vận hành chính thức (Production Environment)
+          =======================================================================
+        -->
+        <button onclick="handleDevBypass()" 
+            title="Sử dụng cho mục đích kiểm thử nhanh giao diện"
+            class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-200/80 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 transition-all duration-200 shadow-sm">
+            <span>🚀 Truy cập nhanh (Bypass &rarr; trangchu.html) [Dev Only]</span>
+        </button>
+    </footer>
+
+    <script>
+        // Khởi tạo icons Lucide
+        lucide.createIcons();
+
+        // Switch giữa 2 Tab: Login / Register
+        function switchTab(tab) {
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const tabLoginBtn = document.getElementById('tabLoginBtn');
+            const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+
+            // Ẩn thông báo lỗi/thành công cũ nếu có
+            hideToast();
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+
+                tabLoginBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 text-emerald-700 bg-white shadow-sm flex items-center justify-center gap-2";
+                tabRegisterBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2";
+            } else {
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+
+                tabRegisterBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 text-emerald-700 bg-white shadow-sm flex items-center justify-center gap-2";
+                tabLoginBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2";
+            }
+        }
+
+        // Toggle Ẩn / Hiện Password
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        // Hiển thị thông báo Toast
+        function showToast(message, type = 'error') {
+            const alertBox = document.getElementById('alertBox');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertMessage = document.getElementById('alertMessage');
+
+            alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border', 'border-red-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200', 'bg-blue-50', 'text-blue-700', 'border-blue-200');
+
+            if (type === 'error') {
+                alertBox.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
+                alertIcon.setAttribute('data-lucide', 'alert-circle');
+            } else if (type === 'success') {
+                alertBox.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+                alertIcon.setAttribute('data-lucide', 'check-circle');
+            } else {
+                alertBox.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200');
+                alertIcon.setAttribute('data-lucide', 'info');
+            }
+
+            alertMessage.textContent = message;
+            lucide.createIcons();
+            alertBox.classList.remove('hidden');
+        }
+
+        // Ẩn thông báo
+        function hideToast() {
+            document.getElementById('alertBox').classList.add('hidden');
+        }
+
+        // Utility Validate Email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const isAdminSelected = document.getElementById('adminRoleCheckbox').checked;
+
+            // Basic Validation
+            if (!identifier) {
+                showToast('Vui lòng nhập Email hoặc Tên tài khoản!');
+                return;
+            }
+
+            if (!password) {
+                showToast('Vui lòng nhập mật khẩu!');
+                return;
+            }
+
+            if (password.length < 4) {
+                showToast('Mật khẩu phải chứa ít nhất 4 ký tự!');
+                return;
+            }
+
+            // Xử lý Phân quyền Đăng Nhập
+            if (isAdminSelected) {
+                // Đăng nhập quyền Admin
+                localStorage.setItem('isAdmin', 'true');
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', identifier);
+                showToast('Đăng nhập Quản trị viên thành công! Đang chuyển hướng...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 800);
+            } else {
+                // Đăng nhập Người dùng thường
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('isAdmin', 'false');
+                localStorage.setItem('userEmail', identifier);
+                showToast('Đăng nhập thành công! Đang chuyển hướng...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'trangchu.html';
+                }, 800);
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            // Basic Validation
+            if (!name) {
+                showToast('Vui lòng nhập Họ và tên!');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showToast('Định dạng Email không hợp lệ!');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Mật khẩu đăng ký phải từ 6 ký tự trở lên!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Mật khẩu xác nhận không trùng khớp!');
+                return;
+            }
+
+            // Đăng ký thành công -> Thông báo và chuyển tab
+            showToast('Tạo tài khoản thành công! Bạn có thể đăng nhập ngay.', 'success');
+            
+            // Auto fill email sang form đăng nhập
+            document.getElementById('loginIdentifier').value = email;
+
+            // Chuyển sang Tab Đăng Nhập sau 1.2s
+            setTimeout(() => {
+                switchTab('login');
+            }, 1200);
+        }
+
+        // TODO: Xóa nút này khi đưa vào vận hành chính thức
+        function handleDevBypass() {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isAdmin', 'false');
+            localStorage.setItem('userEmail', 'dev_bypass@eli10.edu.vn');
+            
+            showToast('🚀 Dev Bypass: Đã lưu phiên giả lập! Đang tới trangchu.html...', 'info');
+            setTimeout(() => {
+                window.location.href = 'trangchu.html';
+            }, 500);
+        }
+    </script>
 </body>
 </html>
