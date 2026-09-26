@@ -3,475 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Học Sinh AI - EduTeach AI</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>ELI10 - Chọn Học Sinh AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-red: #D32F2F;      /* Đỏ chủ đạo */
-            --primary-red-hover: #B71C1C;/* Đỏ đậm */
-            --bg-light: #F8F9FA;         /* Xám trắng */
-            --text-color: #2D3748;
-            --white: #FFFFFF;
-            --border-color: #E2E8F0;
-            --sidebar-width: 250px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Lexend', sans-serif;
-        }
-
         body {
-            background-color: var(--bg-light);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ---------------- HEADER ---------------- */
-        .header {
-            background-color: var(--white);
-            height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border-color);
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .toggle-btn {
-            background: none; border: none;
-            font-size: 22px; color: var(--primary-red);
-            cursor: pointer; padding: 5px;
-            border-radius: 5px; transition: background 0.2s;
-        }
-
-        .toggle-btn:hover { background-color: #FFEBEE; }
-
-        .logo {
-            font-size: 20px; font-weight: 700;
-            color: var(--primary-red);
-            display: flex; align-items: center; gap: 8px;
-            text-decoration: none;
-        }
-
-        .header-right { display: flex; align-items: center; gap: 15px; }
-
-        .icon-btn {
-            background: none; border: none; font-size: 18px;
-            color: var(--text-color); cursor: pointer;
-            padding: 8px 12px; border-radius: 8px;
-            display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s; text-decoration: none;
-        }
-
-        .icon-btn:hover { background-color: #FFEBEE; color: var(--primary-red); }
-
-        .btn-logout {
-            color: var(--primary-red);
-            border: 1px solid var(--primary-red);
-        }
-
-        .btn-logout:hover {
-            background-color: var(--primary-red);
-            color: var(--white);
-        }
-
-        /* ---------------- SIDEBAR ---------------- */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--white);
-            position: fixed; top: 65px; bottom: 0; left: 0;
-            border-right: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-            z-index: 999; padding-top: 15px;
-        }
-
-        .sidebar.closed { transform: translateX(-100%); }
-        .sidebar-menu { list-style: none; }
-        .sidebar-item { margin-bottom: 5px; }
-
-        .sidebar-link {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 20px; color: var(--text-color);
-            text-decoration: none; font-weight: 500; font-size: 15px;
-            transition: all 0.2s; border-left: 4px solid transparent;
-        }
-
-        .sidebar-link:hover, .sidebar-link.active {
-            background-color: #FFEBEE;
-            color: var(--primary-red);
-            border-left-color: var(--primary-red);
-        }
-
-        .sidebar-link i { font-size: 18px; width: 24px; }
-
-        .sidebar-overlay {
-            display: none; position: fixed;
-            top: 65px; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4); z-index: 998;
-        }
-
-        /* ---------------- MAIN CONTENT ---------------- */
-        .main-content {
-            margin-top: 65px;
-            margin-left: var(--sidebar-width);
-            padding: 30px;
-            transition: margin-left 0.3s ease;
-            flex: 1;
-        }
-
-        .main-content.expanded { margin-left: 0; }
-
-        .page-title {
-            font-size: 22px; font-weight: 700;
-            margin-bottom: 8px; color: var(--primary-red);
-        }
-
-        .page-desc {
-            font-size: 14px; color: #718096; margin-bottom: 25px;
-        }
-
-        /* ---------------- STUDENTS GRID ---------------- */
-        .students-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .student-card {
-            background-color: var(--white);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .student-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(211, 47, 47, 0.1);
-            border-color: #FFCDD2;
-        }
-
-        .card-header-bg {
-            height: 80px;
-            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
-            position: relative;
-        }
-
-        .avatar-wrapper {
-            width: 70px; height: 70px;
-            border-radius: 50%;
-            background-color: var(--white);
-            border: 3px solid var(--white);
-            position: absolute;
-            bottom: -35px; left: 20px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .student-body {
-            padding: 45px 20px 20px 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .student-name {
-            font-size: 20px; font-weight: 700; color: var(--text-color);
-        }
-
-        .student-tag {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-top: 5px; margin-bottom: 15px;
-            width: fit-content;
-        }
-
-        .tag-tim { background-color: #E3F2FD; color: #1976D2; }
-        .tag-sarah { background-color: #F3E5F5; color: #7B1FA2; }
-        .tag-alex { background-color: #FFF3E0; color: #E65100; }
-
-        .student-desc-en {
-            font-size: 13px;
-            color: #4A5568;
-            line-height: 1.6;
-            background-color: #FAFAFA;
-            padding: 12px;
-            border-radius: 10px;
-            border-left: 3px solid var(--primary-red);
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        .topic-input-group {
-            margin-top: auto;
-        }
-
-        .topic-input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #718096;
-            margin-bottom: 6px;
-        }
-
-        .topic-input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-            margin-bottom: 12px;
-        }
-
-        .topic-input:focus {
-            border-color: var(--primary-red);
-        }
-
-        .btn-teach {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-red);
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-
-        .btn-teach:hover {
-            background-color: var(--primary-red-hover);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open-mobile { transform: translateX(0); }
-            .sidebar-overlay.active { display: block; }
-            .main-content { margin-left: 0; padding: 15px; }
+            font-family: 'Inter', sans-serif;
         }
     </style>
+    <script>
+        // Custom Tailwind colors
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-left">
-            <button class="toggle-btn" id="toggle-sidebar">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <a href="trangchu.html" class="logo">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span>EduTeach AI</span>
-            </a>
-        </div>
-        <div class="header-right">
-            <button onclick="logout()" class="icon-btn btn-logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span style="font-size: 13px; font-weight: 500;">Đăng xuất</span>
-            </button>
+    <!-- 1. BẢO VỆ TRUY CẬP (Auth Guard) -->
+    <script>
+        (function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn) {
+                alert('Vui lòng đăng nhập để truy cập trang này!');
+                window.location.href = 'index.html';
+            }
+        })();
+    </script>
+
+    <!-- 2. THANH CÔNG CỤ DÙNG CHUNG (Header/Nav) -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <a href="trangchu.html" class="flex items-center space-x-2">
+                        <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-brand-500/20">
+                            E
+                        </div>
+                        <span class="text-2xl font-black text-gray-900 tracking-tight">ELI<span class="text-brand-600">10</span></span>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="trangchu.html" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-colors">
+                        Trang chủ
+                    </a>
+                    <a href="lophoc.html" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-colors">
+                        Lớp học
+                    </a>
+                    <a href="hocsinh.html" class="px-4 py-2 rounded-lg text-sm font-semibold text-brand-600 bg-brand-50 transition-colors">
+                        Học sinh
+                    </a>
+                    <a href="giaoan.html" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-colors">
+                        Giáo án
+                    </a>
+                </nav>
+
+                <!-- Logout Button -->
+                <div class="flex items-center">
+                    <button id="logoutBtn" onclick="handleLogout()" class="inline-flex items-center space-x-2 px-4 py-2 border border-gray-200 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Đăng xuất</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a href="trangchu.html" class="sidebar-link">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Trang chủ</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="lophoc.html" class="sidebar-link">
-                    <i class="fa-solid fa-chalkboard-user"></i>
-                    <span>Lớp học AI</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="hocsinh.html" class="sidebar-link active">
-                    <i class="fa-solid fa-child"></i>
-                    <span>Học sinh AI</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="baocao.html" class="sidebar-link">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Báo cáo & Điểm</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="giaoan.html" class="sidebar-link">
-                    <i class="fa-solid fa-book-open"></i>
-                    <span>Giáo án</span>
-                </a>
-            </li>
-        </ul>
-    </aside>
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content" id="main-content">
-        <h1 class="page-title">Chọn Học Sinh AI & Bài Dạy</h1>
-        <p class="page-desc">Chọn 1 học sinh phù hợp với tính cách, nhập chủ đề Tiếng Anh bạn muốn dạy và bắt đầu vào lớp học.</p>
-
-        <div class="students-grid">
-            <!-- HỌC SINH 1: TIM -->
-            <div class="student-card">
-                <div class="card-header-bg">
-                    <div class="avatar-wrapper">👦🏻</div>
-                </div>
-                <div class="student-body">
-                    <h2 class="student-name">Tim (10 years old)</h2>
-                    <span class="student-tag tag-tim">Innocent & Well-behaved</span>
-                    <p class="student-desc-en">
-                        "Tim is extremely innocent, polite, and eager to learn. However, he easily gets confused by complex words. He asks simple 'Why?' questions and needs direct, visual explanations."
-                    </p>
-                    <div class="topic-input-group">
-                        <label for="topic-tim">Chủ đề bài dạy (Topic):</label>
-                        <input type="text" id="topic-tim" class="topic-input" placeholder="VD: Animals & Habitats">
-                        <button class="btn-teach" onclick="selectStudentAndTeach('Tim', 10, 'innocent', 'topic-tim')">
-                            Dạy học sinh này <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HỌC SINH 2: SARAH -->
-            <div class="student-card">
-                <div class="card-header-bg">
-                    <div class="avatar-wrapper">👧🏼</div>
-                </div>
-                <div class="student-body">
-                    <h2 class="student-name">Sarah (10 years old)</h2>
-                    <span class="student-tag tag-sarah">Smart but Lazy</span>
-                    <p class="student-desc-en">
-                        "Sarah grasps new concepts very quickly but lacks motivation. She easily gets bored if the lesson is too slow or uninteresting. Teachers need to keep her engaged with interactive prompts."
-                    </p>
-                    <div class="topic-input-group">
-                        <label for="topic-sarah">Chủ đề bài dạy (Topic):</label>
-                        <input type="text" id="topic-sarah" class="topic-input" placeholder="VD: Daily Routines">
-                        <button class="btn-teach" onclick="selectStudentAndTeach('Sarah', 10, 'lazy_smart', 'topic-sarah')">
-                            Dạy học sinh này <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HỌC SINH 3: ALEX -->
-            <div class="student-card">
-                <div class="card-header-bg">
-                    <div class="avatar-wrapper">👦🏽</div>
-                </div>
-                <div class="student-body">
-                    <h2 class="student-name">Alex (10 years old)</h2>
-                    <span class="student-tag tag-alex">Naughty & Struggling</span>
-                    <p class="student-desc-en">
-                        "Alex is playful, easily distracted, and struggles with English basics. He often responds with funny or off-topic remarks. Patience and classroom management are key when teaching him."
-                    </p>
-                    <div class="topic-input-group">
-                        <label for="topic-alex">Chủ đề bài dạy (Topic):</label>
-                        <input type="text" id="topic-alex" class="topic-input" placeholder="VD: Food & Drinks">
-                        <button class="btn-teach" onclick="selectStudentAndTeach('Alex', 10, 'naughty', 'topic-alex')">
-                            Dạy học sinh này <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <!-- Page Header Banner -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Danh sách Học Sinh </h1>
+            <p class="text-gray-500 mt-1">Lựa chọn học sinh phù hợp và thiết lập chủ đề để bắt đầu buổi giảng dạy tương tác.</p>
         </div>
+
+        <!-- 3. KHU VỰC CÀI ĐẶT API KEY -->
+        <section class="bg-white rounded-2xl p-6 mb-10 shadow-sm border border-brand-100/80 bg-gradient-to-r from-brand-50/40 via-white to-brand-50/20">
+            <div class="max-w-3xl">
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center text-brand-600">
+                        <i class="fa-solid fa-key text-sm"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900">Cấu hình Gemini API Key</h2>
+                </div>
+                <p class="text-sm text-gray-600 mb-4 ml-11">
+                    API Key được dùng để tương tác trực tiếp với mô hình AI Gemini. Key sẽ được bảo mật và lưu trữ trong trình duyệt của bạn.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-3 ml-0 sm:ml-11">
+                    <div class="relative flex-1">
+                        <input 
+                            type="password" 
+                            id="apiKeyInput" 
+                            placeholder="Nhập Gemini API Key của bạn (AIzaSy...)" 
+                            class="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-all"
+                        />
+                        <button 
+                            type="button" 
+                            onclick="toggleApiKeyVisibility()" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                            title="Bật/Tắt ẩn hiện Key">
+                            <i id="toggleEyeIcon" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <button 
+                        onclick="saveApiKey()" 
+                        class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Lưu API Key</span>
+                    </button>
+                </div>
+                <!-- Status message -->
+                <div id="apiStatusMessage" class="hidden text-xs font-medium text-brand-600 mt-2 ml-11 flex items-center space-x-1">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span id="apiStatusText">Đã lưu API Key thành công!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. KHU VỰC 3 THẺ HỌC SINH AI -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- THẺ 1: Huy -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:border-brand-200">
+                <div class="p-6">
+                    <!-- Top Info Header -->
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-200 flex items-center justify-center text-3xl shrink-0">
+                            👦
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-brand-600 transition-colors">Huy</h3>
+                            <p class="text-xs font-semibold text-blue-600 bg-blue-50 inline-block px-2 py-0.5 rounded-md mt-1">
+                                "Ngơ ngác & Vâng lời"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Badges -->
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                        <span class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full font-medium border border-emerald-100">Ngoan ngoãn</span>
+                        <span class="text-xs bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full font-medium border border-amber-100">Ngơ ngác</span>
+                        <span class="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-medium border border-blue-100">Dễ tiếp thu</span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="text-sm text-gray-600 leading-relaxed mb-6">
+                        Luôn lắng nghe, vâng lời nhưng rất ngơ ngác. Cần được giải thích từng bước một và hay hỏi lại những từ chuyên ngành khó hiểu.
+                    </p>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="p-6 pt-0 bg-white">
+                    <div class="space-y-3">
+                        <label for="topicHuy" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider">Chủ đề bài học</label>
+                        <input 
+                            type="text" 
+                            id="topicHuy" 
+                            placeholder="Nhập bài học cho Huy, ví dụ: Trọng lực..." 
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                        />
+                        <button 
+                            onclick="startLesson('Huy', 'ngo-ngac', 'topicHuy')" 
+                            class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-brand-500/20 flex items-center justify-center space-x-2">
+                            <span>Bắt đầu dạy Huy</span>
+                            <span>🚀</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THẺ 2: Sarah -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:border-brand-200">
+                <div class="p-6">
+                    <!-- Top Info Header -->
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-purple-50 border-2 border-purple-200 flex items-center justify-center text-3xl shrink-0">
+                            👧
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-brand-600 transition-colors">Sarah</h3>
+                            <p class="text-xs font-semibold text-purple-600 bg-purple-50 inline-block px-2 py-0.5 rounded-md mt-1">
+                                "Thông minh & Lười biếng"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Badges -->
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-medium border border-indigo-100">Sắc bén</span>
+                        <span class="text-xs bg-rose-50 text-rose-700 px-2.5 py-1 rounded-full font-medium border border-rose-100">Lười biếng</span>
+                        <span class="text-xs bg-orange-50 text-orange-700 px-2.5 py-1 rounded-full font-medium border border-orange-100">Mất kiên nhẫn</span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="text-sm text-gray-600 leading-relaxed mb-6">
+                        Rất thông minh, tiếp thu nhanh nhưng hay lười và tìm cách đi tóm tắt. Thích giải thích ngắn gọn, nếu giảng dài dòng sẽ tỏ ra chán nản.
+                    </p>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="p-6 pt-0 bg-white">
+                    <div class="space-y-3">
+                        <label for="topicSarah" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider">Chủ đề bài học</label>
+                        <input 
+                            type="text" 
+                            id="topicSarah" 
+                            placeholder="Nhập bài học cho Sarah, ví dụ: Thuật toán..." 
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                        />
+                        <button 
+                            onclick="startLesson('Sarah', 'thong-minh', 'topicSarah')" 
+                            class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-brand-500/20 flex items-center justify-center space-x-2">
+                            <span>Bắt đầu dạy Sarah</span>
+                            <span>🚀</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THẺ 3: Alex -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:border-brand-200">
+                <div class="p-6">
+                    <!-- Top Info Header -->
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-3xl shrink-0">
+                            👦
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-brand-600 transition-colors">Alex</h3>
+                            <p class="text-xs font-semibold text-amber-600 bg-amber-50 inline-block px-2 py-0.5 rounded-md mt-1">
+                                "Học yếu & Nghịch ngợm"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Badges -->
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                        <span class="text-xs bg-red-50 text-red-700 px-2.5 py-1 rounded-full font-medium border border-red-100">Hiếu động</span>
+                        <span class="text-xs bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full font-medium border border-gray-200">Học yếu</span>
+                        <span class="text-xs bg-yellow-50 text-yellow-800 px-2.5 py-1 rounded-full font-medium border border-yellow-200">Mất tập trung</span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="text-sm text-gray-600 leading-relaxed mb-6">
+                        Rất nghịch ngợm, khó tập trung và học yếu. Bắt buộc phải giải thích bằng các ví dụ siêu vui nhộn trong đời sống (game, siêu nhân, đồ ăn) mới hiểu được.
+                    </p>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="p-6 pt-0 bg-white">
+                    <div class="space-y-3">
+                        <label for="topicAlex" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider">Chủ đề bài học</label>
+                        <input 
+                            type="text" 
+                            id="topicAlex" 
+                            placeholder="Nhập bài học cho Alex, ví dụ: Phép nhân..." 
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all"
+                        />
+                        <button 
+                            onclick="startLesson('Alex', 'nghich-ngom', 'topicAlex')" 
+                            class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm hover:shadow-brand-500/20 flex items-center justify-center space-x-2">
+                            <span>Bắt đầu dạy Alex</span>
+                            <span>🚀</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
     </main>
 
-    <!-- SCRIPT XỬ LÝ DỮ LIỆU -->
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-6 mt-12 text-center text-xs text-gray-400">
+        <p>© 2026 ELI10 - Hệ thống thực hành giảng dạy - xuất bản bởi ThanhTuan.</p>
+    </footer>
+
+    <!-- 5. JAVASCRIPT LOGIC -->
     <script>
-        // --- 1. KIỂM TRA ĐĂNG NHẬP KHHI MỞ TRANG ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = sessionStorage.getItem('IS_LOGGED_IN');
-            if (!isLoggedIn) {
-                // Nếu chưa đăng nhập (hoặc vừa thoát trình duyệt mở lại), tự đẩy về index.html
-                window.location.href = 'index.html';
+        // Tự động load API Key đã lưu trong localStorage khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+                showApiStatus('Đã tải API Key từ bộ nhớ!');
             }
         });
 
-        // --- 2. XỬ LÝ ĐĂNG XUẤT ---
-        function logout() {
-            sessionStorage.removeItem('IS_LOGGED_IN');
-            window.location.href = 'index.html';
+        // Bật/Tắt ẩn hiện Gemini API Key
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            const icon = document.getElementById('toggleEyeIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
 
-        // --- 3. ĐIỀU KHIỂN SIDEBAR ---
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
-        const toggleBtn = document.getElementById('toggle-sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-
-        toggleBtn.addEventListener('click', () => {
-            if (window.innerWidth > 768) {
-                sidebar.classList.toggle('closed');
-                mainContent.classList.toggle('expanded');
-            } else {
-                sidebar.classList.toggle('open-mobile');
-                overlay.classList.toggle('active');
+        // Lưu Gemini API Key vào LocalStorage
+        function saveApiKey() {
+            const keyInput = document.getElementById('apiKeyInput').value.trim();
+            if (!keyInput) {
+                alert('Vui lòng nhập Gemini API Key trước khi lưu!');
+                return;
             }
-        });
+            
+            localStorage.setItem('gemini_api_key', keyInput);
+            showApiStatus('Đã lưu API Key thành công!');
+        }
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('open-mobile');
-            overlay.classList.remove('active');
-        });
+        // Hiển thị thông báo trạng thái API Key
+        function showApiStatus(message) {
+            const statusDiv = document.getElementById('apiStatusMessage');
+            const statusText = document.getElementById('apiStatusText');
+            
+            statusText.textContent = message;
+            statusDiv.classList.remove('hidden');
 
-        // --- 4. CHỌN HỌC SINH VÀ CHUYỂN QUA LOPHOC.HTML ---
-        function selectStudentAndTeach(name, age, personality, inputId) {
-            const topicValue = document.getElementById(inputId).value.trim();
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 3000);
+        }
 
-            if (!topicValue) {
-                alert(`Vui lòng nhập chủ đề bạn muốn dạy cho ${name}!`);
+        // Xử lý Đăng xuất
+        function handleLogout() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Logic khi bấm "Bắt đầu dạy [Tên Học Sinh]"
+        function startLesson(studentName, studentType, inputId) {
+            // Bước 1: Kiểm tra API Key
+            const apiKey = localStorage.getItem('gemini_api_key');
+            if (!apiKey) {
+                alert('Vui lòng nhập và lưu Gemini API Key ở phía trên trước khi vào lớp!');
+                document.getElementById('apiKeyInput').focus();
                 return;
             }
 
-            // Lưu dữ liệu vào localStorage để file lophoc.html đọc
-            const selectedClassData = {
-                studentName: name,
-                studentAge: age,
-                personality: personality,
-                topic: topicValue,
-                timestamp: new Date().getTime()
-            };
+            // Bước 2: Kiểm tra nội dung bài học nhập vào
+            const topicInput = document.getElementById(inputId);
+            const topicValue = topicInput.value.trim();
 
-            localStorage.setItem('CURRENT_CLASS_DATA', JSON.stringify(selectedClassData));
+            if (!topicValue) {
+                alert('Vui lòng nhập chủ đề bài học!');
+                topicInput.focus();
+                return;
+            }
 
-            // Nhảy ngay sang trang lớp học
+            // Bước 3: Lưu cấu hình bài học vào localStorage
+            localStorage.setItem('selected_student_name', studentName);
+            localStorage.setItem('selected_student_type', studentType);
+            localStorage.setItem('selected_lesson_topic', topicValue);
+
+            // Bước 4: Chuyển hướng sang lophoc.html
             window.location.href = 'lophoc.html';
         }
     </script>
