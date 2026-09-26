@@ -24,7 +24,7 @@
       }
     }
   </script>
-  <!-- Auth Guard Script (Chạy ngay lập tức để bảo vệ trang) -->
+  <!-- Auth Guard Script -->
   <script>
     if (localStorage.getItem('isLoggedIn') !== 'true') {
       window.location.href = 'index.html';
@@ -37,14 +37,12 @@
   <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
-        <!-- Logo -->
         <div class="flex items-center space-x-3">
           <a href="trangchu.html" class="flex items-center space-x-2">
             <span class="text-2xl font-black bg-gradient-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent tracking-tight">ELI10</span>
           </a>
         </div>
 
-        <!-- Navigation Links -->
         <nav class="hidden md:flex items-center space-x-1 font-medium text-slate-600">
           <a href="trangchu.html" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-brand-50 transition">Trang chủ</a>
           <a href="lophoc.html" class="px-3 py-2 rounded-lg text-brand-600 bg-brand-50 font-semibold">Lớp học</a>
@@ -52,7 +50,6 @@
           <a href="giaoan.html" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-brand-50 transition">Giáo án</a>
         </nav>
 
-        <!-- Logout Button -->
         <div>
           <button id="logoutBtn" onclick="handleLogout()" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition border border-slate-200 hover:border-rose-200">
             Đăng xuất
@@ -65,7 +62,7 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- 2. EMPTY STATE (Hiển thị khi thiếu thông tin học sinh/chủ đề) -->
+    <!-- 2. EMPTY STATE -->
     <div id="emptyState" class="hidden my-auto flex-col items-center justify-center text-center p-8 bg-white rounded-2xl shadow-sm border border-slate-200 max-w-lg mx-auto">
       <div class="text-7xl mb-4 animate-bounce">🏫👻</div>
       <h2 class="text-2xl font-bold text-slate-900 mb-2">Chưa có ai ở đây cả!</h2>
@@ -75,7 +72,7 @@
       </a>
     </div>
 
-    <!-- 3. CLASSROOM UI (Giao diện phòng học khi đã có dữ liệu) -->
+    <!-- 3. CLASSROOM UI -->
     <div id="classroomUI" class="hidden flex-1 flex-col h-[calc(100vh-8rem)] bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
       
       <!-- Class Header -->
@@ -98,9 +95,7 @@
       </div>
 
       <!-- Chat History Area -->
-      <div id="chatHistory" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/50">
-        <!-- Dynamically rendered chat messages -->
-      </div>
+      <div id="chatHistory" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/50"></div>
 
       <!-- Thinking Indicator -->
       <div id="thinkingIndicator" class="hidden px-6 py-2 bg-brand-50 text-brand-700 text-xs font-medium border-t border-brand-100 flex items-center space-x-2">
@@ -137,13 +132,11 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // 1. Đăng xuất
     function handleLogout() {
       localStorage.removeItem('isLoggedIn');
       window.location.href = 'index.html';
     }
 
-    // 2. Lấy dữ liệu học sinh & bài học từ localStorage
     const studentName = localStorage.getItem('selected_student_name');
     const studentType = localStorage.getItem('selected_student_type');
     const lessonTopic = localStorage.getItem('selected_lesson_topic');
@@ -151,7 +144,6 @@
     const emptyState = document.getElementById('emptyState');
     const classroomUI = document.getElementById('classroomUI');
 
-    // Kiểm tra bẫy lỗi Empty State
     if (!studentName || !studentType || !lessonTopic) {
       emptyState.classList.remove('hidden');
       emptyState.classList.add('flex');
@@ -168,24 +160,21 @@
       else if (studentType === 'nghich-ngom') badge.innerText = 'Hard Mode 🔥 • Nghịch ngợm';
       else badge.innerText = studentType;
 
-      // Khởi tạo cuộc trò chuyện
       initClassroom();
     }
 
-    // 3. Xây dựng System Prompt theo cấu hình tính cách
     function getSystemPrompt() {
       const globalRules = `QUY TẮC CHUNG CHO CẢ 3 HỌC SINH:
 1. ĐÚNG ĐỘ TUỔI 10 TUỔI: Tuyệt đối KHÔNG ĐƯỢC hiểu ngay bài giảng trong 1-3 câu đầu tiên. Cần thời gian, cần ví dụ đơn giản và phản ứng tự nhiên của trẻ con.
 2. TỰ ĐỘNG CHUYỂN NGÔN NGỮ: Nếu chủ đề bài học ("${lessonTopic}") có chứa từ "Tiếng Anh", "English" hoặc người dùng nói bằng tiếng Anh, AI BẮT BUỘC phải phản hồi bằng Tiếng Anh trẻ em 10 tuổi. Các môn khác dùng Tiếng Việt.`;
 
       let personalityPrompt = "";
-
       if (studentType === 'ngo-ngac') {
-        personalityPrompt = `Bạn là Huy, học sinh 10 tuổi. Tính cách: Ngoan ngoãn, lễ phép, vâng lời nhưng ĐẦU ÓC CỰC KỲ NGƠ NGÁC, tiếp thu chậm. Luôn dạ/thưa. Khi nghe 1-3 câu đầu, Huy chỉ gật đầu 'Dạ vâng' nhưng bị hỏi lại thì lộ ngay là chưa hiểu gì và hỏi lại từ khó. Cần người dạy giải thích rất sâu và lấy ví dụ đơn giản ít nhất 2-3 lần mới hiểu ra. Nếu dạy Tiếng Anh, Huy nói ngập ngừng, hay hỏi lại từ vựng.`;
+        personalityPrompt = `Bạn là Huy, học sinh 10 tuổi. Tính cách: Ngoan ngoãn, lễ phép, vâng lời nhưng ĐẦU ÓC CỰC KỲ NGƠ NGÁC, tiếp thu chậm. Luôn dạ/thưa. Khi nghe 1-3 câu đầu, Huy chỉ gật đầu 'Dạ vâng' nhưng bị hỏi lại thì lộ ngay là chưa hiểu gì và hỏi lại từ khó. Cần người dạy giải thích rất sâu và lấy ví dụ đơn giản ít nhất 2-3 lần mới hiểu ra.`;
       } else if (studentType === 'thong-minh') {
-        personalityPrompt = `Bạn là Sarah, học sinh 10 tuổi. Tính cách: Thông minh nhưng KHÔNG HỢP TÁC, lơ đễnh, thích vẽ tranh/ngó ra cửa sổ. Khi người dạy nói một đoạn dài, Sarah sẽ thản nhiên hỏi: 'Ơ... thầy/cô vừa nói gì cơ? Em mải nhìn ra ngoài cửa sổ nên không nghe rõ, thầy/cô nói lại từ đầu đi!'. Rất thông minh nên nếu người dạy kích thích bằng cách thách thức ('Bài này khó lắm chắc em không hiểu nổi'), Sarah sẽ lập tức tập trung lại giải cực nhanh. Nếu dạy Tiếng Anh, Sarah nói rất chuẩn nhưng hay trả lời lơ đễnh.`;
+        personalityPrompt = `Bạn là Sarah, học sinh 10 tuổi. Tính cách: Thông minh nhưng KHÔNG HỢP TÁC, lơ đễnh, thích vẽ tranh/ngó ra cửa sổ. Khi người dạy nói một đoạn dài, Sarah sẽ thản nhiên hỏi: 'Ơ... thầy/cô vừa nói gì cơ? Em mải nhìn ra ngoài cửa sổ nên không nghe rõ, thầy/cô nói lại từ đầu đi!'.`;
       } else if (studentType === 'nghich-ngom') {
-        personalityPrompt = `Bạn là Alex, học sinh 10 tuổi đại diện cho Chế độ Hard Mode. Tính cách: Vừa NGƠ NGÁC vừa NGHỊCH NGỢM, cực kỳ tiêu cực, hay cãi bướng, đòi đi chơi game Roblox/Minecraft. Alex chê bài giảng chán, đòi đi vệ sinh, đòi nghỉ học nếu người dạy giảng lý thuyết suông. Bắt buộc người dạy phải lấy ví dụ quậy phá (game, siêu nhân, nổ bóng) mới chịu nghe. Nếu người dạy giải thích thiếu logic, Alex sẽ bắt lỗi và cãi lại ngay. Nếu dạy Tiếng Anh, Alex dùng teencode/slang trẻ con ('Boring!', 'No way', 'Teacher you are so confusing bruh!').`;
+        personalityPrompt = `Bạn là Alex, học sinh 10 tuổi đại diện cho Chế độ Hard Mode. Tính cách: Vừa NGƠ NGÁC vừa NGHỊCH NGỢM, cực kỳ tiêu cực, hay cãi bướng, đòi đi chơi game Roblox/Minecraft. Alex chê bài giảng chán, đòi đi vệ sinh, đòi nghỉ học nếu người dạy giảng lý thuyết suông.`;
       } else {
         personalityPrompt = `Bạn là một học sinh 10 tuổi tên là ${studentName}. Môn học hiện tại là ${lessonTopic}.`;
       }
@@ -193,7 +182,7 @@
       return `${globalRules}\n\nTHÔNG TIN HỌC SINH:\n${personalityPrompt}`;
     }
 
-    // 4. HÀM GỌI GEMINI API chuẩn gemini-2.0-flash
+    // HÀM GỌI GEMINI API SỬ DỤNG GEMINI-2.0-FLASH CHUẨN
     async function callGeminiAPI(systemPrompt, userMessage) {
       const apiKey = localStorage.getItem('gemini_api_key');
       if (!apiKey) {
@@ -232,7 +221,6 @@
       }
     }
 
-    // 5. Hiển thị tin nhắn lên UI
     function appendMessage(sender, text, isError = false) {
       const chatHistory = document.getElementById('chatHistory');
       const isTeacher = sender === 'teacher';
@@ -262,11 +250,9 @@
       wrapper.appendChild(messageBox);
       chatHistory.appendChild(wrapper);
 
-      // Auto-scroll
       chatHistory.scrollTop = chatHistory.scrollHeight;
     }
 
-    // 6. Quản lý trạng thái chờ phản hồi API
     function setLoading(isLoading) {
       const thinkingIndicator = document.getElementById('thinkingIndicator');
       const sendBtn = document.getElementById('sendBtn');
@@ -284,7 +270,6 @@
       }
     }
 
-    // 7. Tin nhắn mở đầu tự động (Auto First Message)
     async function initClassroom() {
       setLoading(true);
       try {
@@ -300,7 +285,6 @@
       }
     }
 
-    // 8. Xử lý gửi tin nhắn từ phía Thầy/Cô
     async function handleSendMessage(e) {
       if (e) e.preventDefault();
 
@@ -308,14 +292,10 @@
       const text = userInput.value.trim();
 
       if (!text) return;
-
-      // Reset input
       userInput.value = '';
 
-      // Đưa tin nhắn giáo viên lên chat
       appendMessage('teacher', text);
 
-      // Gọi API Gemini
       setLoading(true);
       try {
         const systemPrompt = getSystemPrompt();
